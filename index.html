@@ -6,502 +6,997 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
-    <title>Drive Player | Telegram Theme</title>
+    <link
+      rel="shortcut icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg"
+      type="image/x-icon"
+    />
+    <title>Drive Player Pro</title>
 
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+      /* --- THEME VARIABLES --- */
       :root {
-        --tg-bg-main: #0e1621;
-        --tg-bg-sidebar: #17212b;
-        --tg-item-hover: #202b36;
-        --tg-active: #2b5278;
-        --tg-text: #ffffff;
-        --tg-text-muted: #7f91a4;
-        --tg-blue: #5288c1;
-        --tg-green: #46a758;
+        --bg-main: #0e1621;
+        --bg-sidebar: #17212b;
+        --bg-hover: #202b36;
+        --bg-active: #2b5278;
+        --accent: #5288c1;
+        --text-main: #ffffff;
+        --text-muted: #7f91a4;
+        --border: rgba(255, 255, 255, 0.08);
       }
 
       body {
-        background-color: var(--tg-bg-main);
-        color: var(--tg-text);
-        font-family: "Roboto", sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* --- SCROLLBAR --- */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* --- ANIMATIONS & UTILS --- */
+      .truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
       }
 
-      /* Wave Animation Style */
+      /* Wave Animation (Active State) */
       .wave-container {
         display: flex;
         align-items: flex-end;
+        justify-content: center;
         gap: 2px;
         height: 12px;
+        width: 12px;
       }
       .wave-bar {
         width: 3px;
-        background: white;
-        animation: wave-anim 0.8s infinite ease-in-out;
+        background-color: #fff;
+        border-radius: 2px;
+        animation: wave 1s ease-in-out infinite;
+      }
+      .wave-bar:nth-child(1) {
+        animation-delay: 0s;
+        height: 60%;
       }
       .wave-bar:nth-child(2) {
-        animation-delay: 0.2s;
+        animation-delay: 0.1s;
+        height: 100%;
       }
       .wave-bar:nth-child(3) {
-        animation-delay: 0.4s;
+        animation-delay: 0.2s;
+        height: 50%;
       }
-      @keyframes wave-anim {
+
+      @keyframes wave {
         0%,
         100% {
-          height: 4px;
+          transform: scaleY(0.5);
         }
         50% {
-          height: 12px;
+          transform: scaleY(1);
         }
       }
 
-      .tg-sidebar {
-        background-color: var(--tg-bg-sidebar);
-        border-right: 1px solid #000;
-      }
-      .tg-item {
-        padding: 10px 15px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid #0e1621;
-      }
-      .tg-item:hover {
-        background-color: var(--tg-item-hover);
-      }
-      .tg-item.active {
-        background-color: var(--tg-active);
+      /* Sidebar Transitions */
+      .sidebar-transition {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .progress-mini {
-        height: 2px;
-        background: #242f3d;
-        width: 100%;
-        margin-top: 4px;
-        border-radius: 2px;
-        overflow: hidden;
-      }
-      .progress-inner {
-        height: 100%;
-        background: var(--tg-blue);
-        width: 0%;
-        transition: width 0.3s;
-      }
-
-      .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-      .avatar-blue {
-        background: #5288c1;
-      }
-      .avatar-green {
-        background: #46a758;
-      }
-
+      /* VideoJS Overrides for Modern Look */
       .video-js .vjs-big-play-button {
-        border-radius: 50%;
-        width: 70px;
-        height: 70px;
-        line-height: 65px;
-        top: 50%;
-        left: 50%;
-        margin-top: -35px;
-        margin-left: -35px;
+        background-color: rgba(82, 136, 193, 0.9) !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 70px !important;
+        height: 70px !important;
+        line-height: 70px !important;
+        margin-left: -35px !important;
+        margin-top: -35px !important;
+        backdrop-filter: blur(4px);
+        font-size: 2.5em !important;
+        transition: transform 0.2s ease;
+      }
+      .video-js .vjs-big-play-button:hover {
+        transform: scale(1.1);
+        background-color: #4377ae !important;
+      }
+      .video-js .vjs-control-bar {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+      }
+      .video-js .vjs-play-progress {
+        background-color: var(--accent) !important;
       }
 
-      @media (max-width: 768px) {
-        #sidebar {
-          position: absolute;
-          height: 100%;
-          z-index: 50;
-          transform: translateX(-100%);
-          width: 85%;
+      /* Toast Notification */
+      .toast {
+        animation: slideIn 0.3s ease-out forwards;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
         }
-        #sidebar.open {
+        to {
           transform: translateX(0);
-        }
-        .overlay {
-          display: none;
-          position: absolute;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.6);
-          z-index: 40;
-        }
-        .overlay.show {
-          display: block;
+          opacity: 1;
         }
       }
     </style>
   </head>
-  <body class="h-screen flex flex-col md:flex-row">
+  <body class="h-screen flex flex-col md:flex-row relative">
     <div
-      id="library-screen"
-      class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0e1621]"
+      id="toast-container"
+      class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"
+    ></div>
+
+    <div
+      id="library-modal"
+      class="fixed inset-0 z-[100] bg-[#0e1621] flex flex-col items-center justify-center p-4 transition-opacity duration-300"
     >
-      <div class="w-full max-w-2xl p-4">
-        <div class="text-center mb-8">
-          <h1 class="text-2xl font-bold">Drive Player</h1>
-          <p class="text-muted">Enter folder details</p>
+      <div class="w-full max-w-xl animate-fade-in">
+        <div class="text-center mb-10">
+          <div
+            class="w-20 h-20 bg-[#5288c1] rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-2xl shadow-blue-500/20 rotate-3 transform hover:rotate-6 transition duration-300"
+          >
+            <i class="fa-brands fa-google-drive text-white text-4xl"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-white tracking-tight">
+            Drive Player <span class="text-[#5288c1]">Pro</span>
+          </h1>
+          <p class="text-[#7f91a4] mt-2 text-sm">
+            Organize and stream your Drive folders efficiently.
+          </p>
         </div>
-        <div class="bg-[#17212b] p-4 rounded-xl flex gap-2 mb-6">
+
+        <div
+          class="bg-[#17212b] p-2 rounded-2xl shadow-xl flex gap-2 border border-white/5 mb-8"
+        >
           <input
             type="text"
-            id="new-course-name"
+            id="course-name-input"
             placeholder="Course Name"
-            class="bg-[#242f3d] p-3 rounded-lg w-1/3 outline-none text-white"
+            class="bg-transparent px-4 py-3 outline-none w-1/3 text-sm text-white placeholder-gray-500 focus:text-white transition-colors border-r border-white/5"
           />
           <input
             type="text"
-            id="new-course-link"
-            placeholder="Drive Folder Link"
-            class="bg-[#242f3d] p-3 rounded-lg w-full outline-none text-white"
+            id="course-link-input"
+            placeholder="Paste Google Drive Link..."
+            class="bg-transparent px-4 py-3 outline-none flex-1 text-sm text-white placeholder-gray-500"
           />
-          <button onclick="addCourse()" class="bg-[#5288c1] px-6 rounded-lg">
-            <i class="fa-solid fa-plus"></i>
+          <button
+            onclick="handleAddCourse()"
+            class="bg-[#5288c1] w-12 rounded-xl hover:bg-[#4377ae] text-white transition-all active:scale-95 flex items-center justify-center"
+          >
+            <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
-        <div
-          id="course-list"
-          class="flex flex-col gap-2 max-h-[50vh] overflow-y-auto"
-        ></div>
-        <button
-          onclick="closeLibrary()"
-          id="close-lib-btn"
-          class="mt-4 text-muted hidden w-full"
+
+        <h3
+          class="text-xs font-bold text-[#7f91a4] uppercase tracking-wider mb-3 px-1"
         >
-          Back to Player
-        </button>
+          Your Library
+        </h3>
+        <div
+          id="library-list"
+          class="space-y-2 max-h-[35vh] overflow-y-auto pr-2"
+        ></div>
       </div>
     </div>
 
-    <div class="flex-1 flex relative w-full h-full">
-      <div id="sidebar-overlay" class="overlay" onclick="toggleSidebar()"></div>
-
-      <aside
-        id="sidebar"
-        class="w-[350px] tg-sidebar flex flex-col shrink-0 h-full"
+    <div
+      id="sidebar-overlay"
+      class="fixed inset-0 bg-black/60 z-40 hidden md:hidden glass"
+      onclick="toggleSidebar()"
+    ></div>
+    <aside
+      id="sidebar"
+      class="sidebar-transition absolute md:relative z-50 w-[320px] h-full bg-[#17212b] border-r border-[#000]/20 flex flex-col transform -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none"
+    >
+      <div
+        class="h-16 flex items-center px-4 border-b border-white/5 gap-3 shrink-0"
       >
-        <div
-          class="h-[60px] flex items-center px-4 bg-[#17212b] shrink-0 gap-3"
+        <button
+          onclick="openLibrary()"
+          class="text-[#7f91a4] hover:text-white transition p-2 rounded-full hover:bg-white/5"
         >
-          <button onclick="showLibrary()" class="text-muted hover:text-white">
-            <i class="fa-solid fa-arrow-left"></i>
-          </button>
-          <div class="flex-1 min-w-0">
-            <h2 id="header-course-name" class="font-medium truncate">
-              Select Course
-            </h2>
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="flex-1 min-w-0">
+          <h2
+            id="sidebar-title"
+            class="text-sm font-semibold text-white truncate"
+          >
+            Select Course
+          </h2>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+            ></span>
+            <span
+              class="text-[10px] text-[#7f91a4] uppercase font-bold tracking-wide"
+              >Online</span
+            >
           </div>
         </div>
-        <div class="px-3 py-2">
+        <button onclick="toggleSidebar()" class="md:hidden text-[#7f91a4] p-2">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 shrink-0">
+        <div
+          class="bg-[#242f3d] rounded-xl flex items-center px-3 py-2.5 focus-within:ring-1 ring-[#5288c1] transition-all group"
+        >
+          <i
+            class="fa-solid fa-magnifying-glass text-[#7f91a4] text-xs group-focus-within:text-[#5288c1]"
+          ></i>
           <input
             type="text"
-            id="search"
-            placeholder="Search videos..."
-            class="w-full bg-[#242f3d] rounded-full px-4 py-2 text-sm outline-none text-white"
+            id="search-input"
+            placeholder="Search lessons..."
+            class="bg-transparent border-none outline-none text-white text-sm ml-3 w-full placeholder-[#5c6b7f]"
           />
         </div>
-        <div id="playlist" class="flex-1 overflow-y-auto"></div>
-      </aside>
+      </div>
 
-      <main class="flex-1 flex flex-col bg-black">
+      <div
+        id="playlist-container"
+        class="flex-1 overflow-y-auto px-2 pb-20"
+      ></div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-black relative">
+      <div
+        class="md:hidden h-14 bg-[#17212b] flex items-center justify-between px-4 shrink-0 z-30 shadow-md"
+      >
+        <button onclick="toggleSidebar()" class="text-[#7f91a4] p-2">
+          <i class="fa-solid fa-bars"></i>
+        </button>
         <div
-          class="md:hidden h-[56px] bg-[#17212b] flex items-center px-4 gap-4"
-          onclick="toggleSidebar()"
+          class="text-sm font-medium text-white truncate max-w-[200px]"
+          id="mobile-header-title"
         >
-          <i class="fa-solid fa-bars text-muted"></i>
-          <span id="mobile-title" class="truncate text-sm">Drive Player</span>
+          Drive Player
         </div>
-        <div class="flex-1 flex items-center justify-center relative">
-          <video
-            id="my-video"
-            class="video-js vjs-fill vjs-big-play-centered"
-            controls
-            preload="auto"
-            playsinline
-          ></video>
-        </div>
-        <div
-          class="h-[70px] bg-[#17212b] flex items-center justify-between px-6 border-t border-black"
+        <div class="w-8"></div>
+      </div>
+
+      <div
+        class="flex-1 relative flex items-center justify-center bg-black group"
+      >
+        <video
+          id="main-player"
+          class="video-js vjs-fill vjs-big-play-centered"
+          controls
+          preload="auto"
+          playsinline
         >
-          <div id="footer-title" class="text-sm font-medium truncate w-1/3">
-            No video selected
+          <p class="vjs-no-js">Enable JavaScript to view.</p>
+        </video>
+      </div>
+
+      <div
+        class="h-[72px] bg-[#17212b] border-t border-white/5 flex items-center px-4 md:px-8 shrink-0 justify-between select-none"
+      >
+        <div class="hidden md:block w-1/3">
+          <div
+            id="footer-title"
+            class="text-sm font-medium text-white truncate"
+          >
+            No Video Selected
           </div>
-          <div class="flex items-center gap-5">
-            <button onclick="playPrev()" class="text-muted hover:text-white">
-              <i class="fa-solid fa-backward-step fa-xl"></i>
-            </button>
-            <button
-              onclick="togglePlay()"
-              class="w-12 h-12 rounded-full bg-[#5288c1] flex items-center justify-center shadow-lg"
-            >
-              <i id="play-pause-icon" class="fa-solid fa-play ml-1"></i>
-            </button>
-            <button onclick="playNext()" class="text-muted hover:text-white">
-              <i class="fa-solid fa-forward-step fa-xl"></i>
-            </button>
-          </div>
-          <div class="w-1/3 flex justify-end">
-            <button
-              onclick="toggleFullscreen()"
-              class="text-muted hover:text-white"
-            >
-              <i class="fa-solid fa-expand"></i>
-            </button>
+          <div
+            class="text-[11px] text-[#7f91a4] mt-0.5 flex items-center gap-2"
+          >
+            <span id="footer-status">Standby</span>
+            <span class="w-1 h-1 rounded-full bg-[#7f91a4]"></span>
+            <span id="speed-display">1.0x</span>
           </div>
         </div>
-      </main>
-    </div>
+
+        <div class="flex items-center justify-center gap-6 w-full md:w-1/3">
+          <button
+            onclick="playPrev()"
+            class="text-[#7f91a4] hover:text-white transition active:scale-90 p-2"
+            title="Previous (Left Arrow)"
+          >
+            <i class="fa-solid fa-backward-step fa-lg"></i>
+          </button>
+
+          <button
+            onclick="togglePlay()"
+            class="w-12 h-12 rounded-full bg-[#5288c1] hover:bg-[#4377ae] text-white flex items-center justify-center shadow-lg shadow-blue-500/20 transition transform active:scale-95"
+            title="Play/Pause (Space)"
+          >
+            <i id="play-pause-icon" class="fa-solid fa-play ml-1 text-lg"></i>
+          </button>
+
+          <button
+            onclick="playNext()"
+            class="text-[#7f91a4] hover:text-white transition active:scale-90 p-2"
+            title="Next (Shift + Right Arrow)"
+          >
+            <i class="fa-solid fa-forward-step fa-lg"></i>
+          </button>
+        </div>
+
+        <div class="w-1/3 flex justify-end items-center gap-3">
+          <div class="relative group">
+            <button
+              class="text-[#7f91a4] hover:text-white text-xs font-bold bg-[#242f3d] px-2 py-1 rounded transition"
+            >
+              <i class="fa-solid fa-gauge-high mr-1"></i> Speed
+            </button>
+            <div
+              class="absolute bottom-full right-0 mb-2 w-24 bg-[#202b36] rounded-lg shadow-xl border border-white/10 overflow-hidden hidden group-hover:block"
+            >
+              <div
+                onclick="setSpeed(0.5)"
+                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
+              >
+                0.5x
+              </div>
+              <div
+                onclick="setSpeed(1.0)"
+                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer bg-[#2b5278]"
+              >
+                1.0x
+              </div>
+              <div
+                onclick="setSpeed(1.25)"
+                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
+              >
+                1.25x
+              </div>
+              <div
+                onclick="setSpeed(1.5)"
+                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
+              >
+                1.5x
+              </div>
+              <div
+                onclick="setSpeed(2.0)"
+                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
+              >
+                2.0x
+              </div>
+            </div>
+          </div>
+
+          <button
+            onclick="toggleFullscreen()"
+            class="text-[#7f91a4] hover:text-white p-2"
+            title="Fullscreen (F)"
+          >
+            <i class="fa-solid fa-expand"></i>
+          </button>
+        </div>
+      </div>
+    </main>
 
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
+      /**
+       * CONFIG & CONSTANTS
+       */
       const BACKEND_URL = "https://drive-2ipw.onrender.com";
-      let savedCourses = JSON.parse(
-        localStorage.getItem("drive_courses") || "[]",
-      );
-      let completedVideos = JSON.parse(
-        localStorage.getItem("completed_videos") || "[]",
-      );
-      let currentCourse = null,
-        flatPlaylist = [],
-        currentIndex = -1;
+      const STORAGE_KEYS = {
+        COURSES: "dp_courses_v2",
+        LAST_STATE: "dp_last_state_v2",
+        TIMESTAMPS: "dp_timestamps_v2",
+        CACHE_PREFIX: "dp_cache_",
+      };
 
-      const player = videojs("my-video");
+      /**
+       * STATE MANAGEMENT
+       */
+      let appState = {
+        courses: JSON.parse(localStorage.getItem(STORAGE_KEYS.COURSES) || "[]"),
+        currentCourse: null,
+        flatPlaylist: [], // Linear list of videos for next/prev logic
+        currentIndex: -1,
+        timestamps: JSON.parse(
+          localStorage.getItem(STORAGE_KEYS.TIMESTAMPS) || "{}",
+        ),
+      };
 
-      // --- 1. KEYBOARD SHORTCUTS ---
-      document.addEventListener("keydown", (e) => {
-        if (e.target.tagName === "INPUT") return;
-        const k = e.key.toLowerCase();
-
-        if (e.code === "Space") {
-          e.preventDefault();
-          togglePlay();
-        }
-        if (k === "f") toggleFullscreen();
-        if (k === "arrowright") player.currentTime(player.currentTime() + 10);
-        if (k === "arrowleft") player.currentTime(player.currentTime() - 10);
-        if (k === "arrowup") {
-          e.preventDefault();
-          player.volume(Math.min(player.volume() + 0.1, 1));
-        }
-        if (k === "arrowdown") {
-          e.preventDefault();
-          player.volume(Math.max(player.volume() - 0.1, 0));
-        }
-        if (k === "n") playNext();
-        if (k === "p") playPrev();
+      // Player Initialization
+      const player = videojs("main-player", {
+        controlBar: {
+          skipButtons: { forward: 10, backward: 10 },
+          volumePanel: { inline: false },
+          playbackRateMenuButton: false, // We built a custom one
+        },
+        responsive: true,
+        fill: true,
+        html5: { vhs: { overrideNative: true } },
       });
 
-      // --- 2. PROGRESS & COMPLETION LOGIC ---
-      player.on("timeupdate", () => {
-        if (currentIndex === -1) return;
-        const vidId = flatPlaylist[currentIndex].id;
-        const percent = (player.currentTime() / player.duration()) * 100;
+      /**
+       * INITIALIZATION
+       */
+      async function init() {
+        renderLibraryList();
 
-        // Update Mini Progress Bar in Sidebar
-        const bar = document.querySelector(`#vid-${vidId} .progress-inner`);
-        if (bar) bar.style.width = percent + "%";
-
-        // Mark as Finished (if > 90%)
-        if (percent > 90 && !completedVideos.includes(vidId)) {
-          completedVideos.push(vidId);
-          localStorage.setItem(
-            "completed_videos",
-            JSON.stringify(completedVideos),
+        // Restore Last Session
+        const lastState = JSON.parse(
+          localStorage.getItem(STORAGE_KEYS.LAST_STATE),
+        );
+        if (lastState && lastState.courseId) {
+          const course = appState.courses.find(
+            (c) => c.id === lastState.courseId,
           );
-          updateStatusIcon(vidId, true);
-        }
-      });
-
-      function updateStatusIcon(vidId, isDone) {
-        const iconBox = document.querySelector(`#vid-${vidId} .icon-box`);
-        if (!iconBox) return;
-        if (isDone) {
-          iconBox.innerHTML = `<i class="fa-solid fa-check text-xs text-white"></i>`;
-          iconBox.classList.add("bg-green-500");
-          iconBox.classList.remove("bg-[#242f3d]");
-        }
-      }
-
-      // --- 3. UI RENDERING ---
-      async function loadCourse(courseObj, videoId = null) {
-        currentCourse = courseObj;
-        document.getElementById("library-screen").classList.add("hidden");
-        document.getElementById("header-course-name").innerText =
-          courseObj.name;
-
-        const container = document.getElementById("playlist");
-        container.innerHTML = `<div class="p-5 text-center text-muted">Loading Playlist...</div>`;
-        flatPlaylist = [];
-        await fetchCourseContent(courseObj.id, container);
-        finalizeUI();
-        if (videoId) playVideoById(videoId);
-      }
-
-      async function fetchCourseContent(rootId, container) {
-        try {
-          const res = await fetch(`${BACKEND_URL}/api/list/${rootId}`);
-          const data = await res.json();
-          container.innerHTML = "";
-
-          // Filter videos and show them
-          const videos = data.files.filter((f) => f.mimeType.includes("video"));
-          videos.forEach((v) => {
-            flatPlaylist.push(v);
-            const isDone = completedVideos.includes(v.id);
-            const div = document.createElement("div");
-            div.id = `vid-${v.id}`;
-            div.className = "tg-item file-btn group";
-            div.innerHTML = `
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 icon-box ${isDone ? "bg-green-500" : "bg-[#242f3d]"}">
-                        ${isDone ? '<i class="fa-solid fa-check text-xs text-white"></i>' : '<i class="fa-solid fa-play text-xs text-[#5288c1]"></i>'}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-sm font-medium truncate">${v.name.replace(/\.[^/.]+$/, "")}</div>
-                        <div class="progress-mini"><div class="progress-inner"></div></div>
-                    </div>
-                `;
-            div.onclick = () => playVideoById(v.id);
-            container.appendChild(div);
-          });
-        } catch (e) {
-          container.innerHTML = "Error loading files.";
-        }
-      }
-
-      function playVideoById(id) {
-        const idx = flatPlaylist.findIndex((x) => x.id === id);
-        if (idx === -1) return;
-        currentIndex = idx;
-        const v = flatPlaylist[idx];
-
-        player.src({ type: "video/mp4", src: `${BACKEND_URL}/stream/${v.id}` });
-        player.play();
-
-        // UI Updates
-        document.getElementById("footer-title").innerText = v.name;
-        document.getElementById("mobile-title").innerText = v.name;
-
-        // Remove active & Reset others
-        document.querySelectorAll(".tg-item").forEach((el) => {
-          el.classList.remove("active");
-          const box = el.querySelector(".icon-box");
-          const vid = el.id.replace("vid-", "");
-          if (!completedVideos.includes(vid)) {
-            box.innerHTML = `<i class="fa-solid fa-play text-xs text-[#5288c1]"></i>`;
-            box.className =
-              "w-10 h-10 rounded-full flex items-center justify-center shrink-0 icon-box bg-[#242f3d]";
+          if (course) {
+            await loadCourse(course, lastState.videoId);
+          } else {
+            openLibrary();
           }
+        } else {
+          openLibrary();
+        }
+
+        setupKeyboardShortcuts();
+      }
+
+      /**
+       * LIBRARY LOGIC
+       */
+      function openLibrary() {
+        document
+          .getElementById("library-modal")
+          .classList.remove("hidden", "opacity-0", "pointer-events-none");
+        document.getElementById("library-modal").classList.add("flex");
+        if (player) player.pause();
+      }
+
+      function closeLibrary() {
+        const modal = document.getElementById("library-modal");
+        modal.classList.add("opacity-0", "pointer-events-none");
+        setTimeout(() => modal.classList.add("hidden"), 300);
+      }
+
+      function handleAddCourse() {
+        const nameInput = document.getElementById("course-name-input");
+        const linkInput = document.getElementById("course-link-input");
+        const name = nameInput.value.trim();
+        const link = linkInput.value.trim();
+
+        // Regex to extract ID from standard Drive links
+        const idMatch = link.match(/(?:folders\/|id=)([\w-]+)/);
+
+        if (!name || !idMatch) {
+          showToast("Invalid Name or Link", "error");
+          return;
+        }
+
+        const newCourse = { name, id: idMatch[1], addedAt: Date.now() };
+        appState.courses.push(newCourse);
+        saveCourses();
+        renderLibraryList();
+
+        nameInput.value = "";
+        linkInput.value = "";
+        showToast("Course Added Successfully", "success");
+      }
+
+      function deleteCourse(index, e) {
+        e.stopPropagation();
+        if (confirm("Are you sure you want to delete this course?")) {
+          // Clear cache for this course
+          localStorage.removeItem(
+            STORAGE_KEYS.CACHE_PREFIX + appState.courses[index].id,
+          );
+          appState.courses.splice(index, 1);
+          saveCourses();
+          renderLibraryList();
+        }
+      }
+
+      function renderLibraryList() {
+        const list = document.getElementById("library-list");
+        list.innerHTML = "";
+
+        if (appState.courses.length === 0) {
+          list.innerHTML = `<div class="text-center text-xs text-[#7f91a4] py-4">No courses yet. Add one above!</div>`;
+          return;
+        }
+
+        appState.courses.forEach((c, i) => {
+          const div = document.createElement("div");
+          div.className =
+            "group bg-[#242f3d] hover:bg-[#2b3a4a] p-3 rounded-xl flex items-center justify-between cursor-pointer transition-all border border-transparent hover:border-white/5";
+          div.onclick = () => loadCourse(c);
+          div.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#5288c1] to-[#4377ae] flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        ${c.name[0].toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium text-white">${c.name}</div>
+                        <div class="text-[10px] text-[#7f91a4]">Tap to resume learning</div>
+                    </div>
+                </div>
+                <button onclick="deleteCourse(${i}, event)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#7f91a4] hover:text-red-400 hover:bg-white/5 opacity-0 group-hover:opacity-100 transition-all">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            `;
+          list.appendChild(div);
+        });
+      }
+
+      /**
+       * COURSE & CONTENT LOGIC
+       */
+      async function loadCourse(courseObj, videoIdToPlay = null) {
+        appState.currentCourse = courseObj;
+        closeLibrary();
+
+        // Update UI Headers
+        document.getElementById("sidebar-title").innerText = courseObj.name;
+
+        const container = document.getElementById("playlist-container");
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-40 gap-3">
+                <i class="fa-solid fa-circle-notch animate-spin text-[#5288c1] text-2xl"></i>
+                <p class="text-xs text-[#7f91a4]">Fetching your content...</p>
+            </div>
+        `;
+
+        // Check Cache first
+        const cacheKey = STORAGE_KEYS.CACHE_PREFIX + courseObj.id;
+        const cached = localStorage.getItem(cacheKey);
+
+        if (cached) {
+          try {
+            const data = JSON.parse(cached);
+            // Simple cache expiry check (24 hours) - Optional
+            if (Date.now() - data.timestamp < 86400000) {
+              processAndRenderContent(data.structure, videoIdToPlay);
+              return;
+            }
+          } catch (e) {
+            console.error("Cache invalid");
+          }
+        }
+
+        // Fetch Fresh
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/list/${courseObj.id}`);
+          if (!res.ok) throw new Error("API Error");
+          const data = await res.json();
+
+          // Save to Cache
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({
+              timestamp: Date.now(),
+              structure: data.files,
+            }),
+          );
+
+          processAndRenderContent(data.files, videoIdToPlay);
+        } catch (e) {
+          container.innerHTML = `
+                <div class="text-center p-6">
+                    <div class="text-red-400 text-sm mb-2">Connection Failed</div>
+                    <button onclick="loadCourse(appState.currentCourse)" class="text-xs bg-[#5288c1] px-3 py-1.5 rounded hover:bg-[#4377ae] text-white">Retry</button>
+                </div>
+            `;
+          showToast("Failed to load content", "error");
+        }
+      }
+
+      // Recursive Render Logic
+      async function processAndRenderContent(rootFiles, targetVideoId) {
+        appState.flatPlaylist = []; // Reset linear playlist
+        const container = document.getElementById("playlist-container");
+        container.innerHTML = "";
+
+        // Function to process nodes recursively
+        // NOTE: The API structure provided in user context flattens first level,
+        // but for deep folders, we might need on-demand fetch.
+        // Assuming 'rootFiles' contains mixed folders and videos for now.
+
+        const folders = rootFiles.filter((f) => f.mimeType.includes("folder"));
+        const videos = rootFiles.filter((f) => f.mimeType.includes("video"));
+
+        // Render Folders
+        for (const f of folders) {
+          const folderEl = createFolderElement(f);
+          container.appendChild(folderEl);
+          // Auto-fetch sub-folders (Lazy load logic could be added here for optimization)
+          // For now, we create a placeholder container
+        }
+
+        // Render Videos (Root Level)
+        for (const v of videos) {
+          addVideoToPlaylist(v);
+          const videoEl = createVideoElement(
+            v,
+            appState.flatPlaylist.length - 1,
+          );
+          container.appendChild(videoEl);
+        }
+
+        // If specific video requested, play it
+        if (targetVideoId) {
+          playVideoById(targetVideoId);
+        } else if (appState.flatPlaylist.length > 0) {
+          // Don't auto-play on load, just set info
+          updateFooterInfo(0);
+        }
+      }
+
+      function createFolderElement(folderData) {
+        const wrapper = document.createElement("div");
+        const header = document.createElement("div");
+        header.className =
+          "flex items-center gap-3 p-3 rounded-lg hover:bg-[#202b36] cursor-pointer text-[#7f91a4] hover:text-white transition-colors select-none";
+        header.innerHTML = `
+            <i class="fa-solid fa-folder text-[#5288c1] text-sm"></i>
+            <span class="flex-1 text-sm font-medium truncate">${folderData.name}</span>
+            <i class="fa-solid fa-chevron-down text-xs transition-transform transform -rotate-90" id="chev-${folderData.id}"></i>
+        `;
+
+        const contentDiv = document.createElement("div");
+        contentDiv.id = `folder-content-${folderData.id}`;
+        contentDiv.className =
+          "hidden pl-4 border-l border-white/5 ml-4 mt-1 space-y-1";
+        contentDiv.dataset.loaded = "false";
+
+        header.onclick = async () => {
+          const chev = document.getElementById(`chev-${folderData.id}`);
+          const isHidden = contentDiv.classList.contains("hidden");
+
+          if (isHidden) {
+            contentDiv.classList.remove("hidden");
+            chev.classList.remove("-rotate-90");
+
+            // Lazy Load Content if not loaded
+            if (contentDiv.dataset.loaded === "false") {
+              contentDiv.innerHTML = `<div class="p-2 text-xs text-muted">Loading...</div>`;
+              try {
+                const res = await fetch(
+                  `${BACKEND_URL}/api/list/${folderData.id}`,
+                );
+                const data = await res.json();
+                contentDiv.innerHTML = "";
+
+                // Recursive Render for Sub-content
+                const subFolders = data.files.filter((f) =>
+                  f.mimeType.includes("folder"),
+                );
+                const subVideos = data.files.filter((f) =>
+                  f.mimeType.includes("video"),
+                );
+
+                subFolders.forEach((sf) =>
+                  contentDiv.appendChild(createFolderElement(sf)),
+                );
+                subVideos.forEach((sv) => {
+                  addVideoToPlaylist(sv); // Add to linear list
+                  contentDiv.appendChild(
+                    createVideoElement(sv, appState.flatPlaylist.length - 1),
+                  );
+                });
+                contentDiv.dataset.loaded = "true";
+              } catch (e) {
+                contentDiv.innerHTML = `<div class="text-xs text-red-400 p-2">Error loading</div>`;
+              }
+            }
+          } else {
+            contentDiv.classList.add("hidden");
+            chev.classList.add("-rotate-90");
+          }
+        };
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(contentDiv);
+        return wrapper;
+      }
+
+      function createVideoElement(videoData, index) {
+        const div = document.createElement("div");
+        div.id = `vid-el-${videoData.id}`;
+        div.className =
+          "p-3 rounded-lg hover:bg-[#202b36] cursor-pointer flex items-center gap-3 group transition-colors video-item";
+        div.dataset.search = videoData.name.toLowerCase();
+        div.onclick = () => playVideoAtIndex(index);
+
+        div.innerHTML = `
+            <div class="icon-box w-8 h-8 rounded-lg bg-[#242f3d] flex items-center justify-center text-[#7f91a4] group-hover:text-white transition-colors shrink-0">
+                <i class="fa-solid fa-play text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[13px] text-gray-300 group-hover:text-white truncate font-medium transition-colors">
+                    ${videoData.name.replace(/\.[^/.]+$/, "")}
+                </div>
+                <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-[10px] text-[#5c6b7f] uppercase tracking-wide">Video</span>
+                    ${getSavedProgressBadge(videoData.id)}
+                </div>
+            </div>
+        `;
+        return div;
+      }
+
+      function addVideoToPlaylist(video) {
+        appState.flatPlaylist.push(video);
+      }
+
+      function getSavedProgressBadge(vidId) {
+        const time = appState.timestamps[vidId];
+        if (time > 0) {
+          return `<span class="text-[9px] text-[#5288c1] bg-[#5288c1]/10 px-1 rounded">Resume</span>`;
+        }
+        return "";
+      }
+
+      /**
+       * PLAYER LOGIC
+       */
+      function playVideoById(id) {
+        const idx = appState.flatPlaylist.findIndex((v) => v.id === id);
+        if (idx !== -1) playVideoAtIndex(idx);
+      }
+
+      function playVideoAtIndex(index) {
+        if (index < 0 || index >= appState.flatPlaylist.length) return;
+
+        const video = appState.flatPlaylist[index];
+        appState.currentIndex = index;
+
+        // UI Active States
+        document.querySelectorAll(".video-item").forEach((el) => {
+          el.classList.remove("bg-[#2b5278]", "active");
+          el.querySelector(".icon-box").innerHTML =
+            `<i class="fa-solid fa-play text-xs"></i>`;
+          el.querySelector(".icon-box").classList.remove(
+            "bg-[#5288c1]",
+            "text-white",
+          );
         });
 
-        // Set Active & Add Wave Animation
-        const activeItem = document.getElementById(`vid-${id}`);
-        if (activeItem) {
-          activeItem.classList.add("active");
-          const box = activeItem.querySelector(".icon-box");
-          box.innerHTML = `<div class="wave-container"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>`;
-          box.className =
-            "w-10 h-10 rounded-full flex items-center justify-center shrink-0 icon-box bg-[#5288c1]";
-          activeItem.scrollIntoView({ behavior: "smooth", block: "center" });
+        const activeEl = document.getElementById(`vid-el-${video.id}`);
+        if (activeEl) {
+          activeEl.classList.add("bg-[#2b5278]", "active");
+          const iconBox = activeEl.querySelector(".icon-box");
+          iconBox.classList.add("bg-[#5288c1]", "text-white");
+          // Wave Animation
+          iconBox.innerHTML = `
+                <div class="wave-container">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            `;
+          // Scroll into view if needed
+          activeEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
+
+        // Load Video
+        player.src({
+          type: "video/mp4",
+          src: `${BACKEND_URL}/stream/${video.id}`,
+        });
+
+        // Restore Timestamp
+        const savedTime = appState.timestamps[video.id];
+        player.one("loadedmetadata", () => {
+          if (savedTime) player.currentTime(savedTime);
+          player.play().catch((e) => console.log("Autoplay blocked"));
+        });
+
+        updateFooterInfo(index);
+        saveState();
       }
 
-      // --- HELPER FUNCTIONS ---
+      function updateFooterInfo(index) {
+        const video = appState.flatPlaylist[index];
+        document.getElementById("footer-title").innerText = video.name.replace(
+          /\.[^/.]+$/,
+          "",
+        );
+        document.getElementById("mobile-header-title").innerText =
+          video.name.replace(/\.[^/.]+$/, "");
+        document.getElementById("footer-status").innerText = "Now Playing";
+      }
+
+      // Persistence
+      player.on("timeupdate", () => {
+        if (appState.currentIndex === -1) return;
+        const vidId = appState.flatPlaylist[appState.currentIndex].id;
+        appState.timestamps[vidId] = player.currentTime();
+        // Debounce storage write could be added here for performance
+        localStorage.setItem(
+          STORAGE_KEYS.TIMESTAMPS,
+          JSON.stringify(appState.timestamps),
+        );
+      });
+
+      player.on("ended", () => playNext());
+
+      player.on("play", () => {
+        document.getElementById("play-pause-icon").className =
+          "fa-solid fa-pause ml-1 text-lg";
+        document.getElementById("footer-status").innerText = "Playing";
+      });
+
+      player.on("pause", () => {
+        document.getElementById("play-pause-icon").className =
+          "fa-solid fa-play ml-1 text-lg";
+        document.getElementById("footer-status").innerText = "Paused";
+      });
+
+      /**
+       * CONTROLS & UTILS
+       */
       function togglePlay() {
         player.paused() ? player.play() : player.pause();
       }
+
       function playNext() {
-        if (currentIndex < flatPlaylist.length - 1)
-          playVideoById(flatPlaylist[currentIndex + 1].id);
+        if (appState.currentIndex + 1 < appState.flatPlaylist.length) {
+          playVideoAtIndex(appState.currentIndex + 1);
+        } else {
+          showToast("End of Playlist", "info");
+        }
       }
+
       function playPrev() {
-        if (currentIndex > 0) playVideoById(flatPlaylist[currentIndex - 1].id);
+        if (appState.currentIndex - 1 >= 0) {
+          playVideoAtIndex(appState.currentIndex - 1);
+        }
       }
+
+      function setSpeed(rate) {
+        player.playbackRate(rate);
+        document.getElementById("speed-display").innerText = rate + "x";
+      }
+
       function toggleFullscreen() {
         player.isFullscreen()
           ? player.exitFullscreen()
           : player.requestFullscreen();
       }
-      function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("open");
-        document.getElementById("sidebar-overlay").classList.toggle("show");
-      }
-      function showLibrary() {
-        document.getElementById("library-screen").classList.remove("hidden");
-        renderLibrary();
-      }
-      function closeLibrary() {
-        if (currentCourse)
-          document.getElementById("library-screen").classList.add("hidden");
-      }
 
-      function addCourse() {
-        const name = document.getElementById("new-course-name").value;
-        const link = document.getElementById("new-course-link").value;
-        const idMatch = link.match(/[-\w]{25,}/);
-        if (name && idMatch) {
-          savedCourses.push({ name, id: idMatch[0] });
-          localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
-          renderLibrary();
+      function toggleSidebar() {
+        const sb = document.getElementById("sidebar");
+        const ol = document.getElementById("sidebar-overlay");
+
+        if (sb.classList.contains("-translate-x-full")) {
+          sb.classList.remove("-translate-x-full");
+          ol.classList.remove("hidden");
+          // Fade in overlay
+          setTimeout(() => ol.classList.add("pointer-events-auto"), 10);
+        } else {
+          sb.classList.add("-translate-x-full");
+          ol.classList.add("hidden");
         }
       }
 
-      function renderLibrary() {
-        const list = document.getElementById("course-list");
-        list.innerHTML = "";
-        savedCourses.forEach((c, i) => {
-          const div = document.createElement("div");
-          div.className =
-            "bg-[#17212b] p-4 rounded-lg flex justify-between items-center cursor-pointer";
-          div.innerHTML = `<span>${c.name}</span><button onclick="deleteCourse(${i})" class="text-red-400"><i class="fa-solid fa-trash"></i></button>`;
-          div.onclick = (e) => {
-            if (e.target.tagName !== "I" && e.target.tagName !== "BUTTON")
-              loadCourse(c);
-          };
-          list.appendChild(div);
+      // Search Filter
+      document.getElementById("search-input").addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll(".video-item").forEach((el) => {
+          if (el.dataset.search.includes(term)) {
+            el.style.display = "flex";
+          } else {
+            el.style.display = "none";
+          }
+        });
+      });
+
+      // Keyboard Shortcuts
+      function setupKeyboardShortcuts() {
+        document.addEventListener("keydown", (e) => {
+          // Ignore if typing in input
+          if (e.target.tagName === "INPUT") return;
+
+          const key = e.key.toLowerCase();
+
+          switch (e.code) {
+            case "Space":
+              e.preventDefault();
+              togglePlay();
+              break;
+            case "ArrowRight":
+              e.preventDefault();
+              if (e.shiftKey) playNext();
+              else player.currentTime(player.currentTime() + 10);
+              break;
+            case "ArrowLeft":
+              e.preventDefault();
+              player.currentTime(player.currentTime() - 10);
+              break;
+            case "KeyF":
+              toggleFullscreen();
+              break;
+            case "KeyM":
+              player.muted(!player.muted());
+              break;
+          }
         });
       }
 
-      function deleteCourse(i) {
-        savedCourses.splice(i, 1);
-        localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
-        renderLibrary();
+      function saveState() {
+        const state = {
+          courseId: appState.currentCourse.id,
+          videoId: appState.flatPlaylist[appState.currentIndex]?.id,
+        };
+        localStorage.setItem(STORAGE_KEYS.LAST_STATE, JSON.stringify(state));
       }
 
-      player.on(
-        "play",
-        () =>
-          (document.getElementById("play-pause-icon").className =
-            "fa-solid fa-pause"),
-      );
-      player.on(
-        "pause",
-        () =>
-          (document.getElementById("play-pause-icon").className =
-            "fa-solid fa-play"),
-      );
-      player.on("ended", playNext);
+      function saveCourses() {
+        localStorage.setItem(
+          STORAGE_KEYS.COURSES,
+          JSON.stringify(appState.courses),
+        );
+      }
 
-      renderLibrary();
+      // Toast UI
+      function showToast(msg, type = "info") {
+        const container = document.getElementById("toast-container");
+        const div = document.createElement("div");
+
+        let colors = "bg-[#242f3d] border-l-4 border-[#5288c1]";
+        let icon = "fa-circle-info";
+
+        if (type === "error") {
+          colors = "bg-[#242f3d] border-l-4 border-red-500";
+          icon = "fa-circle-exclamation text-red-500";
+        }
+        if (type === "success") {
+          colors = "bg-[#242f3d] border-l-4 border-green-500";
+          icon = "fa-circle-check text-green-500";
+        }
+
+        div.className = `toast p-4 rounded shadow-2xl flex items-center gap-3 text-sm text-white min-w-[250px] ${colors}`;
+        div.innerHTML = `
+            <i class="fa-solid ${icon}"></i>
+            <span>${msg}</span>
+        `;
+
+        container.appendChild(div);
+        setTimeout(() => {
+          div.style.opacity = "0";
+          div.style.transform = "translateX(100%)";
+          div.style.transition = "all 0.3s";
+          setTimeout(() => div.remove(), 300);
+        }, 3000);
+      }
+
+      // Start
+      init();
     </script>
   </body>
 </html>
