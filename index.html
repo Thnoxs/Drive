@@ -6,996 +6,1050 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <link
-      rel="shortcut icon"
-      href="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg"
-      type="image/x-icon"
-    />
-    <title>Drive Player Pro</title>
-
+    <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
+    <title>Drive Player</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-      /* --- THEME VARIABLES --- */
       :root {
-        --bg-main: #0e1621;
-        --bg-sidebar: #17212b;
-        --bg-hover: #202b36;
-        --bg-active: #2b5278;
-        --accent: #5288c1;
-        --text-main: #ffffff;
-        --text-muted: #7f91a4;
-        --border: rgba(255, 255, 255, 0.08);
+        --text-pri: #ffffff;
+        --text-sec: #a1a1aa;
+        --accent: #8b5cf6; /* Violet Accent */
+        --accent-glow: rgba(139, 92, 246, 0.4);
       }
 
-      body {
-        background-color: var(--bg-main);
-        color: var(--text-main);
-        font-family: "Inter", sans-serif;
-        overflow: hidden;
+      * {
+        box-sizing: border-box;
+        outline: none;
         -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      .no-select {
+        user-select: none;
+      }
+      body {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none; /* Standard syntax */
+        margin: 0;
+        font-family: "Outfit", sans-serif;
+        overflow: hidden;
+        height: 100dvh;
+        width: 100vw;
+        color: var(--text-pri);
+        background-color: #000;
+        background-image:
+          radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+          radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+          radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+        background-size: cover;
+        display: flex;
       }
 
-      /* --- SCROLLBAR --- */
+      /* --- GLASS UTILS --- */
+      .glass-panel {
+        background: rgba(10, 10, 10, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+      }
+
+      /* Scrollbars */
       ::-webkit-scrollbar {
-        width: 6px;
+        width: 4px;
       }
       ::-webkit-scrollbar-track {
         background: transparent;
       }
       ::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.2);
       }
 
-      /* --- ANIMATIONS & UTILS --- */
-      .truncate-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+      /* --- LAYOUT --- */
+      .app-shell {
+        display: flex;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
+        position: relative;
+      }
+      .app-shell.sidebar-right {
+        flex-direction: row-reverse;
       }
 
-      /* Wave Animation (Active State) */
-      .wave-container {
+      /* --- SIDEBAR --- */
+      .sidebar {
+        width: 340px;
+        min-width: 260px;
+        max-width: 500px;
         display: flex;
-        align-items: flex-end;
+        flex-direction: column;
+        flex-shrink: 0;
+        z-index: 20;
+      }
+
+      .resizer {
+        width: 2px;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: col-resize;
+        z-index: 50;
+        flex-shrink: 0;
+        transition: 0.2s;
+      }
+      .resizer:hover {
+        background: var(--accent);
+      }
+
+      /* --- LIST ITEMS --- */
+      .folder-btn {
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        color: var(--text-sec);
+        cursor: pointer;
+        font-size: 14px;
+        transition: 0.2s;
+      }
+      .folder-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+      }
+
+      .folder-content {
+        display: none;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .folder-content.open {
+        display: block;
+      }
+
+      .file-btn {
+        padding: 10px 16px 10px 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #999;
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.2s;
+        border-left: 2px solid transparent;
+      }
+      .file-btn:hover {
+        background: rgba(255, 255, 255, 0.03);
+        color: #fff;
+      }
+      .file-btn.active {
+        background: linear-gradient(
+          90deg,
+          rgba(139, 92, 246, 0.15),
+          transparent
+        );
+        border-left-color: var(--accent);
+        color: #fff;
+        font-weight: 500;
+      }
+      .file-btn.active i {
+        color: var(--accent);
+      }
+
+      /* Nested Indentation */
+      .indent-level-1 .file-btn {
+        padding-left: 32px;
+      }
+      .indent-level-1 .folder-btn {
+        padding-left: 24px;
+      }
+
+      /* --- MAIN CONTENT --- */
+      .main-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background: #000;
+      }
+
+      /* --- LIBRARY SCREEN --- */
+      #library-screen {
+        background: rgba(5, 5, 5, 0.95);
+        backdrop-filter: blur(30px);
+      }
+      .course-card {
+        transition:
+          transform 0.3s,
+          border-color 0.3s;
+      }
+      .course-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 30px -10px var(--accent-glow);
+      }
+
+      /* --- TOAST --- */
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+      }
+      .toast {
+        pointer-events: auto;
+        transform: translateX(130%);
+        transition: transform 0.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+      }
+      .toast.show {
+        transform: translateX(0);
+      }
+      .toast-card {
+        background: rgba(15, 15, 20, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 4px solid var(--accent);
+        border-radius: 10px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        min-width: 280px;
+        max-width: 350px;
+        box-shadow:
+          0 10px 25px rgba(0, 0, 0, 0.4),
+          0 0 15px var(--accent-glow);
+      }
+      .status-icon {
+        color: var(--accent);
+        padding: 6px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
         justify-content: center;
+      }
+
+      .toast-message {
+        margin: 0 12px;
+        color: #e4e4e7;
+        font-size: 14px;
+        font-weight: 500;
+        flex-grow: 1;
+      }
+
+      .close-btn {
+        background: transparent;
+        border: none;
+        color: #71717a;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: 0.2s;
+      }
+
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      /* Animation */
+      .wave-anim {
+        display: flex;
         gap: 2px;
         height: 12px;
-        width: 12px;
+        align-items: flex-end;
       }
-      .wave-bar {
-        width: 3px;
-        background-color: #fff;
+      .bar {
+        width: 2px;
+        background: var(--accent);
+        animation: wave 1s infinite;
         border-radius: 2px;
-        animation: wave 1s ease-in-out infinite;
       }
-      .wave-bar:nth-child(1) {
-        animation-delay: 0s;
-        height: 60%;
-      }
-      .wave-bar:nth-child(2) {
+      .bar:nth-child(2) {
         animation-delay: 0.1s;
-        height: 100%;
       }
-      .wave-bar:nth-child(3) {
+      .bar:nth-child(3) {
         animation-delay: 0.2s;
-        height: 50%;
       }
-
       @keyframes wave {
         0%,
         100% {
-          transform: scaleY(0.5);
+          height: 30%;
         }
         50% {
-          transform: scaleY(1);
+          height: 100%;
         }
       }
 
-      /* Sidebar Transitions */
-      .sidebar-transition {
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      /* VideoJS Overrides for Modern Look */
-      .video-js .vjs-big-play-button {
-        background-color: rgba(82, 136, 193, 0.9) !important;
-        border: none !important;
-        border-radius: 50% !important;
-        width: 70px !important;
-        height: 70px !important;
-        line-height: 70px !important;
-        margin-left: -35px !important;
-        margin-top: -35px !important;
-        backdrop-filter: blur(4px);
-        font-size: 2.5em !important;
-        transition: transform 0.2s ease;
-      }
-      .video-js .vjs-big-play-button:hover {
-        transform: scale(1.1);
-        background-color: #4377ae !important;
-      }
-      .video-js .vjs-control-bar {
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-      }
-      .video-js .vjs-play-progress {
-        background-color: var(--accent) !important;
-      }
-
-      /* Toast Notification */
-      .toast {
-        animation: slideIn 0.3s ease-out forwards;
-      }
-      @keyframes slideIn {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
+      /* Mobile */
+      @media (max-width: 768px) {
+        .app-shell {
+          flex-direction: column-reverse !important;
         }
-        to {
-          transform: translateX(0);
-          opacity: 1;
+        .main-content {
+          height: 35vh !important;
+          flex: none;
+          width: 100%;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar {
+          width: 100% !important;
+          height: 65vh !important;
+          border-right: none;
+          flex: none;
+        }
+        .resizer,
+        header {
+          display: none;
+        }
+        #floating-settings {
+          top: 10px;
+          right: 10px;
         }
       }
     </style>
   </head>
-  <body class="h-screen flex flex-col md:flex-row relative">
+  <body>
     <div
-      id="toast-container"
-      class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"
-    ></div>
-
-    <div
-      id="library-modal"
-      class="fixed inset-0 z-[100] bg-[#0e1621] flex flex-col items-center justify-center p-4 transition-opacity duration-300"
+      id="floating-settings"
+      class="flex w-full justify-end absolute top-5 right-6 z-100 items-start"
     >
-      <div class="w-full max-w-xl animate-fade-in">
-        <div class="text-center mb-10">
-          <div
-            class="w-20 h-20 bg-[#5288c1] rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-2xl shadow-blue-500/20 rotate-3 transform hover:rotate-6 transition duration-300"
-          >
-            <i class="fa-brands fa-google-drive text-white text-4xl"></i>
+      <button
+        onclick="shareCurrentCourse()"
+        class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white transition hover:bg-white/10"
+        title="Share Course Link"
+      >
+        <i class="fa-solid fa-share-nodes"></i>
+      </button>
+      <button
+        onclick="openSettings()"
+        class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white transition hover:bg-white/10"
+      >
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div
+      id="library-screen"
+      class="fixed inset-0 z-[1000] flex flex-col items-center justify-center p-6 none"
+    >
+      <button
+        onclick="closeLibrary()"
+        id="lib-close-btn"
+        class="absolute top-6 left-6 w-9 h-9 rounded-full glass-card text-gray-400 hover:text-white flex items-center justify-center none"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <div class="w-full max-w-5xl h-full flex flex-col">
+        <div
+          class="flex flex-col md:flex-row justify-between items-end mb-10 mt-12 shrink-0 gap-6"
+        >
+          <div class="text-center">
+            <h1 class="text-4xl font-light text-white tracking-tight mb-2"></h1>
+            <p class="text-gray-400 text-sm font-light"></p>
           </div>
-          <h1 class="text-3xl font-bold text-white tracking-tight">
-            Drive Player <span class="text-[#5288c1]">Pro</span>
-          </h1>
-          <p class="text-[#7f91a4] mt-2 text-sm">
-            Organize and stream your Drive folders efficiently.
-          </p>
+          <div class="flex glass-card p-1 rounded-xl w-full md:w-auto">
+            <input
+              type="text"
+              id="new-course-name"
+              placeholder="Title"
+              class="bg-transparent text-white px-4 py-2 text-sm w-32 outline-none border-r border-white/10"
+            />
+            <input
+              type="text"
+              id="new-course-link"
+              placeholder="Paste Drive Link..."
+              class="bg-transparent text-white px-4 py-2 text-sm w-full md:w-64 outline-none"
+            />
+            <button
+              onclick="addCourse()"
+              class="bg-violet-600 hover:bg-violet-500 text-white px-5 rounded-lg text-sm font-medium transition shadow-lg shadow-violet-900/40"
+            >
+              Add
+            </button>
+          </div>
         </div>
-
         <div
-          class="bg-[#17212b] p-2 rounded-2xl shadow-xl flex gap-2 border border-white/5 mb-8"
-        >
-          <input
-            type="text"
-            id="course-name-input"
-            placeholder="Course Name"
-            class="bg-transparent px-4 py-3 outline-none w-1/3 text-sm text-white placeholder-gray-500 focus:text-white transition-colors border-r border-white/5"
-          />
-          <input
-            type="text"
-            id="course-link-input"
-            placeholder="Paste Google Drive Link..."
-            class="bg-transparent px-4 py-3 outline-none flex-1 text-sm text-white placeholder-gray-500"
-          />
-          <button
-            onclick="handleAddCourse()"
-            class="bg-[#5288c1] w-12 rounded-xl hover:bg-[#4377ae] text-white transition-all active:scale-95 flex items-center justify-center"
-          >
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-
-        <h3
-          class="text-xs font-bold text-[#7f91a4] uppercase tracking-wider mb-3 px-1"
-        >
-          Your Library
-        </h3>
-        <div
-          id="library-list"
-          class="space-y-2 max-h-[35vh] overflow-y-auto pr-2"
+          id="course-list"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-y-auto custom-scroll pb-20 pt-2 px-2"
         ></div>
       </div>
     </div>
 
     <div
-      id="sidebar-overlay"
-      class="fixed inset-0 bg-black/60 z-40 hidden md:hidden glass"
-      onclick="toggleSidebar()"
-    ></div>
-    <aside
-      id="sidebar"
-      class="sidebar-transition absolute md:relative z-50 w-[320px] h-full bg-[#17212b] border-r border-[#000]/20 flex flex-col transform -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none"
+      id="settings-modal"
+      class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/60 backdrop-blur-sm"
     >
       <div
-        class="h-16 flex items-center px-4 border-b border-white/5 gap-3 shrink-0"
+        class="glass-card p-6 rounded-2xl w-[90%] max-w-sm"
+        style="background: #111"
       >
-        <button
-          onclick="openLibrary()"
-          class="text-[#7f91a4] hover:text-white transition p-2 rounded-full hover:bg-white/5"
-        >
-          <i class="fa-solid fa-arrow-left"></i>
-        </button>
-        <div class="flex-1 min-w-0">
-          <h2
-            id="sidebar-title"
-            class="text-sm font-semibold text-white truncate"
-          >
-            Select Course
-          </h2>
-          <div class="flex items-center gap-1.5 mt-0.5">
-            <span
-              class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
-            ></span>
-            <span
-              class="text-[10px] text-[#7f91a4] uppercase font-bold tracking-wide"
-              >Online</span
-            >
-          </div>
-        </div>
-        <button onclick="toggleSidebar()" class="md:hidden text-[#7f91a4] p-2">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="p-4 shrink-0">
-        <div
-          class="bg-[#242f3d] rounded-xl flex items-center px-3 py-2.5 focus-within:ring-1 ring-[#5288c1] transition-all group"
-        >
-          <i
-            class="fa-solid fa-magnifying-glass text-[#7f91a4] text-xs group-focus-within:text-[#5288c1]"
-          ></i>
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Search lessons..."
-            class="bg-transparent border-none outline-none text-white text-sm ml-3 w-full placeholder-[#5c6b7f]"
-          />
-        </div>
-      </div>
-
-      <div
-        id="playlist-container"
-        class="flex-1 overflow-y-auto px-2 pb-20"
-      ></div>
-    </aside>
-
-    <main class="flex-1 flex flex-col min-w-0 bg-black relative">
-      <div
-        class="md:hidden h-14 bg-[#17212b] flex items-center justify-between px-4 shrink-0 z-30 shadow-md"
-      >
-        <button onclick="toggleSidebar()" class="text-[#7f91a4] p-2">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <div
-          class="text-sm font-medium text-white truncate max-w-[200px]"
-          id="mobile-header-title"
-        >
-          Drive Player
-        </div>
-        <div class="w-8"></div>
-      </div>
-
-      <div
-        class="flex-1 relative flex items-center justify-center bg-black group"
-      >
-        <video
-          id="main-player"
-          class="video-js vjs-fill vjs-big-play-centered"
-          controls
-          preload="auto"
-          playsinline
-        >
-          <p class="vjs-no-js">Enable JavaScript to view.</p>
-        </video>
-      </div>
-
-      <div
-        class="h-[72px] bg-[#17212b] border-t border-white/5 flex items-center px-4 md:px-8 shrink-0 justify-between select-none"
-      >
-        <div class="hidden md:block w-1/3">
-          <div
-            id="footer-title"
-            class="text-sm font-medium text-white truncate"
-          >
-            No Video Selected
-          </div>
-          <div
-            class="text-[11px] text-[#7f91a4] mt-0.5 flex items-center gap-2"
-          >
-            <span id="footer-status">Standby</span>
-            <span class="w-1 h-1 rounded-full bg-[#7f91a4]"></span>
-            <span id="speed-display">1.0x</span>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-center gap-6 w-full md:w-1/3">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-white font-medium">Preferences</h3>
           <button
-            onclick="playPrev()"
-            class="text-[#7f91a4] hover:text-white transition active:scale-90 p-2"
-            title="Previous (Left Arrow)"
+            onclick="closeSettings()"
+            class="text-gray-400 hover:text-white"
           >
-            <i class="fa-solid fa-backward-step fa-lg"></i>
-          </button>
-
-          <button
-            onclick="togglePlay()"
-            class="w-12 h-12 rounded-full bg-[#5288c1] hover:bg-[#4377ae] text-white flex items-center justify-center shadow-lg shadow-blue-500/20 transition transform active:scale-95"
-            title="Play/Pause (Space)"
-          >
-            <i id="play-pause-icon" class="fa-solid fa-play ml-1 text-lg"></i>
-          </button>
-
-          <button
-            onclick="playNext()"
-            class="text-[#7f91a4] hover:text-white transition active:scale-90 p-2"
-            title="Next (Shift + Right Arrow)"
-          >
-            <i class="fa-solid fa-forward-step fa-lg"></i>
+            <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-
-        <div class="w-1/3 flex justify-end items-center gap-3">
-          <div class="relative group">
-            <button
-              class="text-[#7f91a4] hover:text-white text-xs font-bold bg-[#242f3d] px-2 py-1 rounded transition"
+        <div class="space-y-6">
+          <div>
+            <label
+              class="text-gray-500 text-xs font-bold uppercase mb-2 block tracking-wider"
+              >Sidebar</label
             >
-              <i class="fa-solid fa-gauge-high mr-1"></i> Speed
-            </button>
-            <div
-              class="absolute bottom-full right-0 mb-2 w-24 bg-[#202b36] rounded-lg shadow-xl border border-white/10 overflow-hidden hidden group-hover:block"
-            >
-              <div
-                onclick="setSpeed(0.5)"
-                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
+            <div class="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
+              <button
+                onclick="setSidebar('left')"
+                id="btn-left"
+                class="py-2 text-xs rounded-lg transition-all"
               >
-                0.5x
-              </div>
-              <div
-                onclick="setSpeed(1.0)"
-                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer bg-[#2b5278]"
+                Left
+              </button>
+              <button
+                onclick="setSidebar('right')"
+                id="btn-right"
+                class="py-2 text-xs rounded-lg transition-all"
               >
-                1.0x
-              </div>
-              <div
-                onclick="setSpeed(1.25)"
-                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
-              >
-                1.25x
-              </div>
-              <div
-                onclick="setSpeed(1.5)"
-                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
-              >
-                1.5x
-              </div>
-              <div
-                onclick="setSpeed(2.0)"
-                class="px-3 py-2 text-xs text-white hover:bg-[#5288c1] cursor-pointer"
-              >
-                2.0x
-              </div>
+                Right
+              </button>
             </div>
           </div>
-
-          <button
-            onclick="toggleFullscreen()"
-            class="text-[#7f91a4] hover:text-white p-2"
-            title="Fullscreen (F)"
-          >
-            <i class="fa-solid fa-expand"></i>
-          </button>
+          <div class="pt-4 border-t border-white/10">
+            <button
+              onclick="
+                showLibrary();
+                closeSettings();
+              "
+              class="w-full py-3 text-sm text-white glass-card hover:bg-white/10 rounded-xl transition"
+            >
+              Switch Course
+            </button>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
+
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar glass-panel" id="sidebar">
+        <div class="p-4 border-b border-white/5">
+          <div
+            class="flex items-center gap-3 mb-4 opacity-90 cursor-pointer hover:opacity-100"
+            onclick="showLibrary()"
+          >
+            <div class="w-8 h-8 flex items-center justify-center">
+              <img src="assets/logo.png" alt="" />
+            </div>
+            <div class="overflow-hidden">
+              <span
+                id="header-course-name"
+                class="text-sm font-medium truncate text-white block"
+                >Select...</span
+              >
+            </div>
+          </div>
+          <div class="relative group">
+            <i
+              class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-500 text-xs"
+            ></i>
+            <input
+              type="text"
+              id="search"
+              placeholder="Search modules..."
+              class="w-full bg-white/5 text-white pl-9 p-2 rounded-lg text-xs outline-none focus:bg-white/10 transition border border-transparent focus:border-violet-500/30"
+            />
+          </div>
+        </div>
+        <div
+          id="playlist"
+          class="flex-1 overflow-y-auto custom-scroll pb-10"
+        ></div>
+      </aside>
+
+      <div class="resizer" id="resizer"></div>
+
+      <main class="main-content">
+        <div
+          class="flex-1 relative bg-black w-full h-full flex items-center justify-center overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-violet-900/5 to-black pointer-events-none"
+          ></div>
+          <video
+            id="my-video"
+            class="video-js vjs-fill vjs-big-play-centered relative z-10"
+            controls
+            preload="auto"
+            playsinline
+          >
+            <p class="vjs-no-js">Enable JS.</p>
+          </video>
+        </div>
+
+        <div
+          class="h-[60px] bg-[#050505] border-t border-white/5 flex items-center justify-between px-6 shrink-0 none md:flex"
+        >
+          <div class="flex flex-col w-2/3">
+            <span
+              class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mb-0.5"
+              >NOW PLAYING</span
+            >
+            <span
+              id="video-title"
+              class="truncate text-sm text-gray-300 font-medium"
+              >No video selected</span
+            >
+          </div>
+          <div class="flex gap-2">
+            <button
+              onclick="shareCurrentCourse()"
+              class="w-9 h-9 rounded-full glass-card hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition"
+              title="Share Link"
+            >
+              <i class="fa-solid fa-link"></i>
+            </button>
+            <div class="w-[1px] h-6 bg-white/10 mx-2 self-center"></div>
+            <button
+              onclick="playPrev()"
+              class="w-9 h-9 rounded-full glass-card hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition"
+            >
+              <i class="fa-solid fa-backward-step"></i>
+            </button>
+            <button
+              onclick="playNext()"
+              class="w-9 h-9 rounded-full glass-card hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition"
+            >
+              <i class="fa-solid fa-forward-step"></i>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
 
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
-      /**
-       * CONFIG & CONSTANTS
-       */
-      const BACKEND_URL = "https://drive-2ipw.onrender.com";
-      const STORAGE_KEYS = {
-        COURSES: "dp_courses_v2",
-        LAST_STATE: "dp_last_state_v2",
-        TIMESTAMPS: "dp_timestamps_v2",
-        CACHE_PREFIX: "dp_cache_",
-      };
+      // CONFIG - Isko apne server URL se replace kar dena agar deploy kare toh
+      // Local testing ke liye: http://localhost:3000
+      const BACKEND_URL = "https://drive-czlu.onrender.com";
 
-      /**
-       * STATE MANAGEMENT
-       */
-      let appState = {
-        courses: JSON.parse(localStorage.getItem(STORAGE_KEYS.COURSES) || "[]"),
-        currentCourse: null,
-        flatPlaylist: [], // Linear list of videos for next/prev logic
-        currentIndex: -1,
-        timestamps: JSON.parse(
-          localStorage.getItem(STORAGE_KEYS.TIMESTAMPS) || "{}",
-        ),
-      };
+      const CACHE_PREFIX = "drive_content_v3_";
+      const LAST_STATE_KEY = "drive_last_state";
 
-      // Player Initialization
-      const player = videojs("main-player", {
-        controlBar: {
-          skipButtons: { forward: 10, backward: 10 },
-          volumePanel: { inline: false },
-          playbackRateMenuButton: false, // We built a custom one
-        },
-        responsive: true,
+      // STATE
+      let savedCourses = JSON.parse(
+        localStorage.getItem("drive_courses") || "[]",
+      );
+      let userSettings = JSON.parse(
+        localStorage.getItem("drive_settings") || '{"sidebar": "left"}',
+      );
+      let currentCourse = null;
+      let flatPlaylist = [];
+      let currentIndex = -1;
+      let currentOpenFolderId = null;
+
+      // INIT PLAYER
+      const player = videojs("my-video", {
         fill: true,
-        html5: { vhs: { overrideNative: true } },
+        responsive: true,
+        playbackRates: [0.5, 1, 1.1, 1.2, 1.3, 1.4, 2],
+        html5: { vhs: { overrideNative: true }, nativeCaptions: false },
+        userActions: { hotkeys: false },
+        controlBar: { volumePanel: { inline: false }, subsCapsButton: true },
+        html5: {
+          nativeTextTracks: true,
+        },
       });
 
-      /**
-       * INITIALIZATION
-       */
+      // --- INITIALIZATION ---
       async function init() {
-        renderLibraryList();
+        setSidebar(userSettings.sidebar);
 
-        // Restore Last Session
-        const lastState = JSON.parse(
-          localStorage.getItem(STORAGE_KEYS.LAST_STATE),
-        );
-        if (lastState && lastState.courseId) {
-          const course = appState.courses.find(
-            (c) => c.id === lastState.courseId,
-          );
-          if (course) {
-            await loadCourse(course, lastState.videoId);
-          } else {
-            openLibrary();
-          }
+        // 1. Check for URL Params (Shared Link Logic)
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedCourseId = urlParams.get("c");
+        const sharedVideoId = urlParams.get("v");
+
+        if (sharedCourseId) {
+          // "Ghost" Load: Don't need to add to local library to play
+          await loadSharedCourse(sharedCourseId, sharedVideoId);
         } else {
-          openLibrary();
-        }
-
-        setupKeyboardShortcuts();
-      }
-
-      /**
-       * LIBRARY LOGIC
-       */
-      function openLibrary() {
-        document
-          .getElementById("library-modal")
-          .classList.remove("hidden", "opacity-0", "pointer-events-none");
-        document.getElementById("library-modal").classList.add("flex");
-        if (player) player.pause();
-      }
-
-      function closeLibrary() {
-        const modal = document.getElementById("library-modal");
-        modal.classList.add("opacity-0", "pointer-events-none");
-        setTimeout(() => modal.classList.add("hidden"), 300);
-      }
-
-      function handleAddCourse() {
-        const nameInput = document.getElementById("course-name-input");
-        const linkInput = document.getElementById("course-link-input");
-        const name = nameInput.value.trim();
-        const link = linkInput.value.trim();
-
-        // Regex to extract ID from standard Drive links
-        const idMatch = link.match(/(?:folders\/|id=)([\w-]+)/);
-
-        if (!name || !idMatch) {
-          showToast("Invalid Name or Link", "error");
-          return;
-        }
-
-        const newCourse = { name, id: idMatch[1], addedAt: Date.now() };
-        appState.courses.push(newCourse);
-        saveCourses();
-        renderLibraryList();
-
-        nameInput.value = "";
-        linkInput.value = "";
-        showToast("Course Added Successfully", "success");
-      }
-
-      function deleteCourse(index, e) {
-        e.stopPropagation();
-        if (confirm("Are you sure you want to delete this course?")) {
-          // Clear cache for this course
-          localStorage.removeItem(
-            STORAGE_KEYS.CACHE_PREFIX + appState.courses[index].id,
-          );
-          appState.courses.splice(index, 1);
-          saveCourses();
-          renderLibraryList();
+          // Normal Flow
+          initLibrary();
+          const lastState = JSON.parse(localStorage.getItem(LAST_STATE_KEY));
+          if (lastState && lastState.courseId) {
+            const course = savedCourses.find(
+              (c) => c.id === lastState.courseId,
+            );
+            if (course) {
+              loadCourse(course, lastState.videoId);
+            } else showLibrary();
+          } else showLibrary();
         }
       }
 
-      function renderLibraryList() {
-        const list = document.getElementById("library-list");
-        list.innerHTML = "";
+      // --- CORE LOGIC: Loading ---
 
-        if (appState.courses.length === 0) {
-          list.innerHTML = `<div class="text-center text-xs text-[#7f91a4] py-4">No courses yet. Add one above!</div>`;
-          return;
-        }
-
-        appState.courses.forEach((c, i) => {
-          const div = document.createElement("div");
-          div.className =
-            "group bg-[#242f3d] hover:bg-[#2b3a4a] p-3 rounded-xl flex items-center justify-between cursor-pointer transition-all border border-transparent hover:border-white/5";
-          div.onclick = () => loadCourse(c);
-          div.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#5288c1] to-[#4377ae] flex items-center justify-center text-white font-bold text-sm shadow-md">
-                        ${c.name[0].toUpperCase()}
-                    </div>
-                    <div>
-                        <div class="text-sm font-medium text-white">${c.name}</div>
-                        <div class="text-[10px] text-[#7f91a4]">Tap to resume learning</div>
-                    </div>
-                </div>
-                <button onclick="deleteCourse(${i}, event)" class="w-8 h-8 rounded-full flex items-center justify-center text-[#7f91a4] hover:text-red-400 hover:bg-white/5 opacity-0 group-hover:opacity-100 transition-all">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            `;
-          list.appendChild(div);
-        });
+      // Load from Library
+      function loadCourseByIndex(index) {
+        loadCourse(savedCourses[index]);
       }
 
-      /**
-       * COURSE & CONTENT LOGIC
-       */
-      async function loadCourse(courseObj, videoIdToPlay = null) {
-        appState.currentCourse = courseObj;
-        closeLibrary();
+      // Universal Load Function
+      async function loadCourse(courseObj, autoPlayVideoId = null) {
+        currentCourse = courseObj;
 
-        // Update UI Headers
-        document.getElementById("sidebar-title").innerText = courseObj.name;
+        // UI Updates
+        document.getElementById("library-screen").style.display = "none";
+        document.getElementById("header-course-name").innerText =
+          currentCourse.name;
+        document.getElementById("lib-close-btn").style.display = "flex";
 
-        const container = document.getElementById("playlist-container");
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-40 gap-3">
-                <i class="fa-solid fa-circle-notch animate-spin text-[#5288c1] text-2xl"></i>
-                <p class="text-xs text-[#7f91a4]">Fetching your content...</p>
-            </div>
-        `;
+        const container = document.getElementById("playlist");
+        const cached = localStorage.getItem(CACHE_PREFIX + currentCourse.id);
 
-        // Check Cache first
-        const cacheKey = STORAGE_KEYS.CACHE_PREFIX + courseObj.id;
-        const cached = localStorage.getItem(cacheKey);
-
+        // Check Cache
         if (cached) {
-          try {
-            const data = JSON.parse(cached);
-            // Simple cache expiry check (24 hours) - Optional
-            if (Date.now() - data.timestamp < 86400000) {
-              processAndRenderContent(data.structure, videoIdToPlay);
-              return;
-            }
-          } catch (e) {
-            console.error("Cache invalid");
-          }
+          const data = JSON.parse(cached);
+          flatPlaylist = data.flatPlaylist;
+          container.innerHTML = data.htmlStr;
+          finalizeLoad(autoPlayVideoId);
+        } else {
+          container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Syncing Cloud Structure...</div>`;
+          flatPlaylist = [];
+          await fetchCourseContent(currentCourse.id, container);
+          finalizeLoad(autoPlayVideoId);
         }
 
-        // Fetch Fresh
+        // Update URL to reflect current course (for sharing)
+        updateURL(currentCourse.id, autoPlayVideoId);
+      }
+
+      // Specific Logic for Shared Links (Fetches Name first)
+      async function loadSharedCourse(courseId, videoId) {
+        document.getElementById("library-screen").style.display = "none";
+        const container = document.getElementById("playlist");
+        container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Resolving Shared Link...</div>`;
+
         try {
-          const res = await fetch(`${BACKEND_URL}/api/list/${courseObj.id}`);
-          if (!res.ok) throw new Error("API Error");
+          // 1. Fetch Course Name from YOUR BACKEND API
+          const res = await fetch(`${BACKEND_URL}/api/meta/${courseId}`);
+          if (!res.ok) throw new Error("Meta fetch failed");
+          const meta = await res.json();
+
+          const ghostCourse = {
+            id: courseId,
+            name: meta.name || "Shared Course",
+          };
+          currentCourse = ghostCourse;
+
+          // 2. Load Content
+          document.getElementById("header-course-name").innerText =
+            ghostCourse.name;
+          document.getElementById("lib-close-btn").style.display = "flex";
+
+          // Bypass cache for shared links to ensure freshness? Or use cache? Let's use cache for speed.
+          const cached = localStorage.getItem(CACHE_PREFIX + courseId);
+          if (cached) {
+            const data = JSON.parse(cached);
+            flatPlaylist = data.flatPlaylist;
+            container.innerHTML = data.htmlStr;
+          } else {
+            flatPlaylist = [];
+            await fetchCourseContent(courseId, container);
+          }
+          finalizeLoad(videoId);
+        } catch (e) {
+          console.error(e);
+          showToast("Invalid Link or Permission Denied");
+          showLibrary();
+        }
+      }
+
+      function finalizeLoad(autoPlayVideoId) {
+        // Re-attach listeners
+        document
+          .querySelectorAll(".folder-btn")
+          .forEach((btn) => (btn.onclick = () => toggleFolder(btn.dataset.id)));
+        document
+          .querySelectorAll(".file-btn")
+          .forEach(
+            (btn) => (btn.onclick = () => playVideoById(btn.dataset.id)),
+          );
+
+        // Auto Play Logic
+        if (autoPlayVideoId) {
+          playVideoById(autoPlayVideoId);
+        } else if (flatPlaylist.length > 0) {
+          // Don't auto play 1st video, just wait.
+        }
+      }
+
+      // --- DRIVE API FETCH (UPDATED TO USE BACKEND) ---
+      async function fetchCourseContent(rootId, container) {
+        // Updated to use your Backend API
+        const url = `${BACKEND_URL}/api/list/${rootId}`;
+
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Backend Fetch Failed");
           const data = await res.json();
 
-          // Save to Cache
+          if (!data.files) return;
+
+          container.innerHTML = "";
+          const folders = data.files.filter((f) =>
+            f.mimeType.includes("folder"),
+          );
+          const videos = data.files.filter((f) => f.mimeType.includes("video"));
+          await processNodes(folders, videos, container, rootId);
+
           localStorage.setItem(
-            cacheKey,
+            CACHE_PREFIX + rootId,
             JSON.stringify({
-              timestamp: Date.now(),
-              structure: data.files,
+              flatPlaylist: flatPlaylist,
+              htmlStr: container.innerHTML,
             }),
           );
-
-          processAndRenderContent(data.files, videoIdToPlay);
         } catch (e) {
-          container.innerHTML = `
-                <div class="text-center p-6">
-                    <div class="text-red-400 text-sm mb-2">Connection Failed</div>
-                    <button onclick="loadCourse(appState.currentCourse)" class="text-xs bg-[#5288c1] px-3 py-1.5 rounded hover:bg-[#4377ae] text-white">Retry</button>
-                </div>
-            `;
-          showToast("Failed to load content", "error");
+          console.error(e);
+          container.innerHTML = `<div class="p-8 text-center text-red-400 text-xs">Failed to load. Check Backend URL.</div>`;
         }
       }
 
-      // Recursive Render Logic
-      async function processAndRenderContent(rootFiles, targetVideoId) {
-        appState.flatPlaylist = []; // Reset linear playlist
-        const container = document.getElementById("playlist-container");
-        container.innerHTML = "";
-
-        // Function to process nodes recursively
-        // NOTE: The API structure provided in user context flattens first level,
-        // but for deep folders, we might need on-demand fetch.
-        // Assuming 'rootFiles' contains mixed folders and videos for now.
-
-        const folders = rootFiles.filter((f) => f.mimeType.includes("folder"));
-        const videos = rootFiles.filter((f) => f.mimeType.includes("video"));
-
-        // Render Folders
+      async function processNodes(folders, videos, container, parentId) {
         for (const f of folders) {
-          const folderEl = createFolderElement(f);
-          container.appendChild(folderEl);
-          // Auto-fetch sub-folders (Lazy load logic could be added here for optimization)
-          // For now, we create a placeholder container
-        }
+          const div = document.createElement("div");
+          div.innerHTML = `
+                  <div id="btn-${f.id}" class="folder-btn group" data-id="${f.id}">
+                      <div class="flex items-center gap-3 truncate">
+                          <i class="fa-regular fa-folder text-violet-400 opacity-60 group-hover:opacity-100 transition"></i>
+                          <span class="truncate transition-colors">${f.name}</span>
+                      </div>
+                      <i class="fa-solid fa-chevron-down text-[10px] chevron transition-transform duration-200 opacity-40"></i>
+                  </div>
+                  <div id="folder-${f.id}" class="folder-content pl-2"></div> `;
+          container.appendChild(div);
 
-        // Render Videos (Root Level)
-        for (const v of videos) {
-          addVideoToPlaylist(v);
-          const videoEl = createVideoElement(
-            v,
-            appState.flatPlaylist.length - 1,
-          );
-          container.appendChild(videoEl);
-        }
+          const innerContainer = div.querySelector(`#folder-${f.id}`);
+          innerContainer.classList.add("indent-level-1");
 
-        // If specific video requested, play it
-        if (targetVideoId) {
-          playVideoById(targetVideoId);
-        } else if (appState.flatPlaylist.length > 0) {
-          // Don't auto-play on load, just set info
-          updateFooterInfo(0);
-        }
-      }
+          // Recursively call Backend API
+          const res = await fetch(`${BACKEND_URL}/api/list/${f.id}`);
+          const data = await res.json();
 
-      function createFolderElement(folderData) {
-        const wrapper = document.createElement("div");
-        const header = document.createElement("div");
-        header.className =
-          "flex items-center gap-3 p-3 rounded-lg hover:bg-[#202b36] cursor-pointer text-[#7f91a4] hover:text-white transition-colors select-none";
-        header.innerHTML = `
-            <i class="fa-solid fa-folder text-[#5288c1] text-sm"></i>
-            <span class="flex-1 text-sm font-medium truncate">${folderData.name}</span>
-            <i class="fa-solid fa-chevron-down text-xs transition-transform transform -rotate-90" id="chev-${folderData.id}"></i>
-        `;
-
-        const contentDiv = document.createElement("div");
-        contentDiv.id = `folder-content-${folderData.id}`;
-        contentDiv.className =
-          "hidden pl-4 border-l border-white/5 ml-4 mt-1 space-y-1";
-        contentDiv.dataset.loaded = "false";
-
-        header.onclick = async () => {
-          const chev = document.getElementById(`chev-${folderData.id}`);
-          const isHidden = contentDiv.classList.contains("hidden");
-
-          if (isHidden) {
-            contentDiv.classList.remove("hidden");
-            chev.classList.remove("-rotate-90");
-
-            // Lazy Load Content if not loaded
-            if (contentDiv.dataset.loaded === "false") {
-              contentDiv.innerHTML = `<div class="p-2 text-xs text-muted">Loading...</div>`;
-              try {
-                const res = await fetch(
-                  `${BACKEND_URL}/api/list/${folderData.id}`,
-                );
-                const data = await res.json();
-                contentDiv.innerHTML = "";
-
-                // Recursive Render for Sub-content
-                const subFolders = data.files.filter((f) =>
-                  f.mimeType.includes("folder"),
-                );
-                const subVideos = data.files.filter((f) =>
-                  f.mimeType.includes("video"),
-                );
-
-                subFolders.forEach((sf) =>
-                  contentDiv.appendChild(createFolderElement(sf)),
-                );
-                subVideos.forEach((sv) => {
-                  addVideoToPlaylist(sv); // Add to linear list
-                  contentDiv.appendChild(
-                    createVideoElement(sv, appState.flatPlaylist.length - 1),
-                  );
-                });
-                contentDiv.dataset.loaded = "true";
-              } catch (e) {
-                contentDiv.innerHTML = `<div class="text-xs text-red-400 p-2">Error loading</div>`;
-              }
-            }
-          } else {
-            contentDiv.classList.add("hidden");
-            chev.classList.add("-rotate-90");
+          if (data.files) {
+            const subFolders = data.files.filter((x) =>
+              x.mimeType.includes("folder"),
+            );
+            const subVideos = data.files.filter((x) =>
+              x.mimeType.includes("video"),
+            );
+            await processNodes(subFolders, subVideos, innerContainer, f.id);
           }
-        };
-
-        wrapper.appendChild(header);
-        wrapper.appendChild(contentDiv);
-        return wrapper;
-      }
-
-      function createVideoElement(videoData, index) {
-        const div = document.createElement("div");
-        div.id = `vid-el-${videoData.id}`;
-        div.className =
-          "p-3 rounded-lg hover:bg-[#202b36] cursor-pointer flex items-center gap-3 group transition-colors video-item";
-        div.dataset.search = videoData.name.toLowerCase();
-        div.onclick = () => playVideoAtIndex(index);
-
-        div.innerHTML = `
-            <div class="icon-box w-8 h-8 rounded-lg bg-[#242f3d] flex items-center justify-center text-[#7f91a4] group-hover:text-white transition-colors shrink-0">
-                <i class="fa-solid fa-play text-xs"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-                <div class="text-[13px] text-gray-300 group-hover:text-white truncate font-medium transition-colors">
-                    ${videoData.name.replace(/\.[^/.]+$/, "")}
-                </div>
-                <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-[10px] text-[#5c6b7f] uppercase tracking-wide">Video</span>
-                    ${getSavedProgressBadge(videoData.id)}
-                </div>
-            </div>
-        `;
-        return div;
-      }
-
-      function addVideoToPlaylist(video) {
-        appState.flatPlaylist.push(video);
-      }
-
-      function getSavedProgressBadge(vidId) {
-        const time = appState.timestamps[vidId];
-        if (time > 0) {
-          return `<span class="text-[9px] text-[#5288c1] bg-[#5288c1]/10 px-1 rounded">Resume</span>`;
         }
-        return "";
-      }
-
-      /**
-       * PLAYER LOGIC
-       */
-      function playVideoById(id) {
-        const idx = appState.flatPlaylist.findIndex((v) => v.id === id);
-        if (idx !== -1) playVideoAtIndex(idx);
-      }
-
-      function playVideoAtIndex(index) {
-        if (index < 0 || index >= appState.flatPlaylist.length) return;
-
-        const video = appState.flatPlaylist[index];
-        appState.currentIndex = index;
-
-        // UI Active States
-        document.querySelectorAll(".video-item").forEach((el) => {
-          el.classList.remove("bg-[#2b5278]", "active");
-          el.querySelector(".icon-box").innerHTML =
-            `<i class="fa-solid fa-play text-xs"></i>`;
-          el.querySelector(".icon-box").classList.remove(
-            "bg-[#5288c1]",
-            "text-white",
-          );
-        });
-
-        const activeEl = document.getElementById(`vid-el-${video.id}`);
-        if (activeEl) {
-          activeEl.classList.add("bg-[#2b5278]", "active");
-          const iconBox = activeEl.querySelector(".icon-box");
-          iconBox.classList.add("bg-[#5288c1]", "text-white");
-          // Wave Animation
-          iconBox.innerHTML = `
-                <div class="wave-container">
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                </div>
-            `;
-          // Scroll into view if needed
-          activeEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        for (const v of videos) {
+          flatPlaylist.push({ ...v, parentId: parentId });
+          const div = document.createElement("div");
+          div.id = `vid-${v.id}`;
+          div.className = "file-btn group";
+          div.dataset.id = v.id;
+          div.dataset.search = v.name.toLowerCase();
+          div.innerHTML = `<i class="fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0"></i><span class="truncate">${v.name.replace(/\.mp4/i, "")}</span>`;
+          container.appendChild(div);
         }
+      }
 
-        // Load Video
+      // --- PLAYBACK ---
+      function playVideoById(videoId) {
+        const videoIndex = flatPlaylist.findIndex((v) => v.id === videoId);
+        if (videoIndex === -1) return;
+        const video = flatPlaylist[videoIndex];
+        currentIndex = videoIndex;
+
+        // Uses Backend Stream Endpoint
         player.src({
           type: "video/mp4",
           src: `${BACKEND_URL}/stream/${video.id}`,
         });
-
-        // Restore Timestamp
-        const savedTime = appState.timestamps[video.id];
-        player.one("loadedmetadata", () => {
-          if (savedTime) player.currentTime(savedTime);
-          player.play().catch((e) => console.log("Autoplay blocked"));
-        });
-
-        updateFooterInfo(index);
-        saveState();
-      }
-
-      function updateFooterInfo(index) {
-        const video = appState.flatPlaylist[index];
-        document.getElementById("footer-title").innerText = video.name.replace(
-          /\.[^/.]+$/,
+        player.play().catch(() => {});
+        document.getElementById("video-title").innerText = video.name.replace(
+          /\.mp4/i,
           "",
         );
-        document.getElementById("mobile-header-title").innerText =
-          video.name.replace(/\.[^/.]+$/, "");
-        document.getElementById("footer-status").innerText = "Now Playing";
-      }
 
-      // Persistence
-      player.on("timeupdate", () => {
-        if (appState.currentIndex === -1) return;
-        const vidId = appState.flatPlaylist[appState.currentIndex].id;
-        appState.timestamps[vidId] = player.currentTime();
-        // Debounce storage write could be added here for performance
-        localStorage.setItem(
-          STORAGE_KEYS.TIMESTAMPS,
-          JSON.stringify(appState.timestamps),
+        // UI Active State
+        document.querySelectorAll(".file-btn").forEach((b) => {
+          b.classList.remove("active");
+          b.querySelector(".icon-box").className =
+            "fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0";
+          b.querySelector(".icon-box").innerHTML = "";
+        });
+
+        const activeBtn = document.querySelector(
+          `.file-btn[data-id="${videoId}"]`,
         );
-      });
+        if (activeBtn) {
+          activeBtn.classList.add("active");
+          const iconBox = activeBtn.querySelector(".icon-box");
+          iconBox.className = "icon-box shrink-0";
+          iconBox.innerHTML = `<div class="wave-anim"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
 
-      player.on("ended", () => playNext());
-
-      player.on("play", () => {
-        document.getElementById("play-pause-icon").className =
-          "fa-solid fa-pause ml-1 text-lg";
-        document.getElementById("footer-status").innerText = "Playing";
-      });
-
-      player.on("pause", () => {
-        document.getElementById("play-pause-icon").className =
-          "fa-solid fa-play ml-1 text-lg";
-        document.getElementById("footer-status").innerText = "Paused";
-      });
-
-      /**
-       * CONTROLS & UTILS
-       */
-      function togglePlay() {
-        player.paused() ? player.play() : player.pause();
-      }
-
-      function playNext() {
-        if (appState.currentIndex + 1 < appState.flatPlaylist.length) {
-          playVideoAtIndex(appState.currentIndex + 1);
-        } else {
-          showToast("End of Playlist", "info");
-        }
-      }
-
-      function playPrev() {
-        if (appState.currentIndex - 1 >= 0) {
-          playVideoAtIndex(appState.currentIndex - 1);
-        }
-      }
-
-      function setSpeed(rate) {
-        player.playbackRate(rate);
-        document.getElementById("speed-display").innerText = rate + "x";
-      }
-
-      function toggleFullscreen() {
-        player.isFullscreen()
-          ? player.exitFullscreen()
-          : player.requestFullscreen();
-      }
-
-      function toggleSidebar() {
-        const sb = document.getElementById("sidebar");
-        const ol = document.getElementById("sidebar-overlay");
-
-        if (sb.classList.contains("-translate-x-full")) {
-          sb.classList.remove("-translate-x-full");
-          ol.classList.remove("hidden");
-          // Fade in overlay
-          setTimeout(() => ol.classList.add("pointer-events-auto"), 10);
-        } else {
-          sb.classList.add("-translate-x-full");
-          ol.classList.add("hidden");
-        }
-      }
-
-      // Search Filter
-      document.getElementById("search-input").addEventListener("input", (e) => {
-        const term = e.target.value.toLowerCase();
-        document.querySelectorAll(".video-item").forEach((el) => {
-          if (el.dataset.search.includes(term)) {
-            el.style.display = "flex";
-          } else {
-            el.style.display = "none";
+          // Expand Folders logic
+          if (video.parentId) {
+            // ... (Keep existing expansion logic if deeply nested)
+            let p = document.getElementById(`folder-${video.parentId}`);
+            if (p) {
+              p.classList.add("open");
+              document
+                .getElementById(`btn-${video.parentId}`)
+                .querySelector(".chevron").style.transform = "rotate(180deg)";
+            }
           }
-        });
-      });
+        }
 
-      // Keyboard Shortcuts
-      function setupKeyboardShortcuts() {
-        document.addEventListener("keydown", (e) => {
-          // Ignore if typing in input
-          if (e.target.tagName === "INPUT") return;
+        // Update URL State without reload
+        updateURL(currentCourse.id, videoId);
 
-          const key = e.key.toLowerCase();
-
-          switch (e.code) {
-            case "Space":
-              e.preventDefault();
-              togglePlay();
-              break;
-            case "ArrowRight":
-              e.preventDefault();
-              if (e.shiftKey) playNext();
-              else player.currentTime(player.currentTime() + 10);
-              break;
-            case "ArrowLeft":
-              e.preventDefault();
-              player.currentTime(player.currentTime() - 10);
-              break;
-            case "KeyF":
-              toggleFullscreen();
-              break;
-            case "KeyM":
-              player.muted(!player.muted());
-              break;
-          }
-        });
-      }
-
-      function saveState() {
-        const state = {
-          courseId: appState.currentCourse.id,
-          videoId: appState.flatPlaylist[appState.currentIndex]?.id,
-        };
-        localStorage.setItem(STORAGE_KEYS.LAST_STATE, JSON.stringify(state));
-      }
-
-      function saveCourses() {
         localStorage.setItem(
-          STORAGE_KEYS.COURSES,
-          JSON.stringify(appState.courses),
+          LAST_STATE_KEY,
+          JSON.stringify({ courseId: currentCourse.id, videoId: video.id }),
         );
       }
 
-      // Toast UI
-      function showToast(msg, type = "info") {
+      function updateURL(courseId, videoId) {
+        if (!courseId) return;
+        let newUrl = `?c=${courseId}`;
+        if (videoId) newUrl += `&v=${videoId}`;
+        window.history.pushState({ path: newUrl }, "", newUrl);
+      }
+
+      function shareCurrentCourse() {
+        if (!currentCourse) return;
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          showToast("Link Copied! Share it with anyone.");
+        });
+      }
+
+      function toggleFolder(id) {
+        const el = document.getElementById(`folder-${id}`);
+        const btn = document.getElementById(`btn-${id}`);
+        const chevron = btn.querySelector(".chevron");
+        if (el.classList.contains("open")) {
+          el.classList.remove("open");
+          chevron.style.transform = "rotate(0deg)";
+        } else {
+          el.classList.add("open");
+          chevron.style.transform = "rotate(180deg)";
+        }
+      }
+
+      const playNext = () => {
+        if (currentIndex + 1 < flatPlaylist.length)
+          playVideoById(flatPlaylist[currentIndex + 1].id);
+      };
+      const playPrev = () => {
+        if (currentIndex - 1 >= 0)
+          playVideoById(flatPlaylist[currentIndex - 1].id);
+      };
+
+      player.on("ended", () => {
+        showToast("Playing next...");
+        playNext();
+      });
+
+      // --- LIBRARY & UTILS ---
+      function initLibrary() {
+        const list = document.getElementById("course-list");
+        list.innerHTML = "";
+        if (savedCourses.length === 0)
+          list.innerHTML = `<div class="col-span-full text-center text-gray-500 py-20 font-light">Add a Google Drive link to begin.</div>`;
+        savedCourses.forEach((c, i) => {
+          const div = document.createElement("div");
+          div.className =
+            "course-card glass-card p-6 h-[180px] flex flex-col justify-between rounded-2xl cursor-pointer group hover:bg-white/5";
+          div.onclick = (e) => {
+            if (!e.target.closest("button")) loadCourseByIndex(i);
+          };
+          div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-violet-600 transition-colors">${c.name[0].toUpperCase()}</div>
+                    <button onclick="deleteCourse(${i})" class="text-gray-500 hover:text-red-400 p-2 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+                <div><h3 class="text-lg font-medium text-white leading-tight line-clamp-2">${c.name}</h3><p class="text-xs text-gray-500 font-mono mt-2 opacity-60">ID: ${c.id.slice(0, 6)}</p></div>
+              `;
+          list.appendChild(div);
+        });
+      }
+
+      function addCourse() {
+        const name = document.getElementById("new-course-name").value;
+        const link = document.getElementById("new-course-link").value;
+        const match = link.match(/(?:folders\/|id=)([\w-]+)/);
+        if (name && match) {
+          savedCourses.push({ name: name, id: match[1] });
+          localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
+          initLibrary();
+        } else {
+          alert("Invalid Link");
+        }
+      }
+      function deleteCourse(i) {
+        if (confirm("Delete?")) {
+          localStorage.removeItem(CACHE_PREFIX + savedCourses[i].id);
+          savedCourses.splice(i, 1);
+          localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
+          initLibrary();
+        }
+      }
+
+      // UI HELPERS
+      function showLibrary() {
+        // clear url params to keep clean
+        window.history.pushState({}, "", window.location.pathname);
+        document.getElementById("library-screen").style.display = "flex";
+        initLibrary();
+      }
+      function closeLibrary() {
+        document.getElementById("library-screen").style.display = "none";
+      }
+      function openSettings() {
+        document.getElementById("settings-modal").style.display = "flex";
+      }
+      function closeSettings() {
+        document.getElementById("settings-modal").style.display = "none";
+      }
+
+      // Resizer & Sidebar
+      const resizer = document.getElementById("resizer");
+      const sidebar = document.getElementById("sidebar");
+      let isResizing = false;
+      resizer.addEventListener("mousedown", () => {
+        isResizing = true;
+        document.body.style.cursor = "col-resize";
+      });
+      document.addEventListener("mouseup", () => {
+        isResizing = false;
+        document.body.style.cursor = "";
+      });
+      document.addEventListener("mousemove", (e) => {
+        if (!isResizing) return;
+        const w = document
+          .getElementById("app-shell")
+          .classList.contains("sidebar-right")
+          ? window.innerWidth - e.clientX
+          : e.clientX;
+        if (w > 200 && w < 600) sidebar.style.width = w + "px";
+      });
+      function setSidebar(pos) {
+        const shell = document.getElementById("app-shell");
+        if (pos === "right") shell.classList.add("sidebar-right");
+        else shell.classList.remove("sidebar-right");
+        userSettings.sidebar = pos;
+        localStorage.setItem("drive_settings", JSON.stringify(userSettings));
+      }
+
+      // Toast
+      function showToast(msg) {
         const container = document.getElementById("toast-container");
-        const div = document.createElement("div");
+        const toast = document.createElement("div");
 
-        let colors = "bg-[#242f3d] border-l-4 border-[#5288c1]";
-        let icon = "fa-circle-info";
+        // Animation control ke liye hum 'toast' class hi use karenge
+        toast.className = "toast";
 
-        if (type === "error") {
-          colors = "bg-[#242f3d] border-l-4 border-red-500";
-          icon = "fa-circle-exclamation text-red-500";
-        }
-        if (type === "success") {
-          colors = "bg-[#242f3d] border-l-4 border-green-500";
-          icon = "fa-circle-check text-green-500";
-        }
+        // Tera naya HTML structure
+        toast.innerHTML = `
+        <div class="toast-card">
+            <div class="status-icon">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                </svg>
+            </div>
+            <div class="toast-message">${msg}</div>
+            <button type="button" class="close-btn" onclick="this.closest('.toast').remove()">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                </svg>
+            </button>
+        </div>
+    `;
 
-        div.className = `toast p-4 rounded shadow-2xl flex items-center gap-3 text-sm text-white min-w-[250px] ${colors}`;
-        div.innerHTML = `
-            <i class="fa-solid ${icon}"></i>
-            <span>${msg}</span>
-        `;
+        container.appendChild(toast);
 
-        container.appendChild(div);
+        // Show animation
+        requestAnimationFrame(() => toast.classList.add("show"));
+
+        // Auto-remove after 3 seconds
         setTimeout(() => {
-          div.style.opacity = "0";
-          div.style.transform = "translateX(100%)";
-          div.style.transition = "all 0.3s";
-          setTimeout(() => div.remove(), 300);
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 500);
         }, 3000);
       }
 
-      // Start
+      // Filter
+      document.getElementById("search").addEventListener("input", (e) => {
+        const v = e.target.value.toLowerCase();
+        document
+          .querySelectorAll(".file-btn")
+          .forEach(
+            (b) =>
+              (b.style.display = b.dataset.search.includes(v)
+                ? "flex"
+                : "none"),
+          );
+      });
+
+      // Keyboard
+      document.addEventListener("keydown", (e) => {
+        if (e.target.tagName === "INPUT") return;
+        const k = e.key.toLowerCase();
+        const isCmd = e.metaKey || e.ctrlKey;
+        if (e.code === "Space") {
+          e.preventDefault();
+          player.paused() ? player.play() : player.pause();
+        }
+        if (k === "f") {
+          e.preventDefault();
+          player.isFullscreen()
+            ? player.exitFullscreen()
+            : player.requestFullscreen();
+        }
+        if (k === "arrowright") {
+          e.preventDefault();
+          if (isCmd) playNext();
+          else player.currentTime(player.currentTime() + 1.5);
+        }
+        if (k === "arrowleft") {
+          e.preventDefault();
+          if (isCmd) playPrev();
+          else player.currentTime(player.currentTime() - 1.5);
+        }
+      });
+
       init();
     </script>
   </body>
