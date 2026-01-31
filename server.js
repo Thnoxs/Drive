@@ -15,7 +15,8 @@ app.use(
 );
 
 // --- SERVICE ACCOUNT SETUP ---
-// Ensure drive-player-bot.json is in the same folder or uploaded to Render Secret Files
+// Render par ye file Secret Files se aayegi (/etc/secrets/drive-player-bot.json)
+// Local par ye root folder mein honi chahiye
 const KEYFILEPATH = path.join(__dirname, "drive-player-bot.json");
 
 const auth = new google.auth.GoogleAuth({
@@ -29,7 +30,7 @@ app.get("/", (req, res) => {
   res.send("Drive Player Backend (Service Account) is Ready 🚀");
 });
 
-// --- NEW: API TO LIST FILES (Replaces Frontend API Key) ---
+// --- NEW: FOLDER LIST API (Frontend ab ye use karega) ---
 app.get("/api/list/:folderId", async (req, res) => {
   try {
     const q = `'${req.params.folderId}' in parents and trashed = false`;
@@ -45,7 +46,7 @@ app.get("/api/list/:folderId", async (req, res) => {
   }
 });
 
-// --- NEW: API TO GET COURSE NAME (For Shared Links) ---
+// --- NEW: COURSE NAME API ---
 app.get("/api/meta/:fileId", async (req, res) => {
   try {
     const response = await drive.files.get({
@@ -58,7 +59,7 @@ app.get("/api/meta/:fileId", async (req, res) => {
   }
 });
 
-// --- VIDEO STREAMING ---
+// --- STREAMING API ---
 app.get("/stream/:fileId", async (req, res) => {
   const fileId = req.params.fileId;
   const range = req.headers.range;

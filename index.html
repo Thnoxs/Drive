@@ -20,27 +20,20 @@
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
 
     <style>
-      /* --- TUMHARA ORIGINAL CSS --- */
+      /* --- ORIGINAL GLASS UI --- */
       :root {
         --text-pri: #ffffff;
         --text-sec: #a1a1aa;
-        --accent: #8b5cf6; /* Violet Accent */
+        --accent: #8b5cf6;
         --accent-glow: rgba(139, 92, 246, 0.4);
       }
-
       * {
         box-sizing: border-box;
         outline: none;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
       }
-      .no-select {
-        user-select: none;
-      }
       body {
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10+ */
-        user-select: none; /* Standard syntax */
         margin: 0;
         font-family: "Outfit", sans-serif;
         overflow: hidden;
@@ -55,12 +48,9 @@
         background-size: cover;
         display: flex;
       }
-
-      /* --- GLASS UTILS --- */
       .glass-panel {
         background: rgba(10, 10, 10, 0.7);
         backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
         border-right: 1px solid rgba(255, 255, 255, 0.08);
       }
       .glass-card {
@@ -68,8 +58,6 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(10px);
       }
-
-      /* Scrollbars */
       ::-webkit-scrollbar {
         width: 4px;
       }
@@ -80,11 +68,6 @@
         background: rgba(255, 255, 255, 0.1);
         border-radius: 4px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-
-      /* --- LAYOUT --- */
       .app-shell {
         display: flex;
         width: 100%;
@@ -95,8 +78,6 @@
       .app-shell.sidebar-right {
         flex-direction: row-reverse;
       }
-
-      /* --- SIDEBAR --- */
       .sidebar {
         width: 340px;
         min-width: 260px;
@@ -106,7 +87,6 @@
         flex-shrink: 0;
         z-index: 20;
       }
-
       .resizer {
         width: 2px;
         background: rgba(255, 255, 255, 0.05);
@@ -118,8 +98,6 @@
       .resizer:hover {
         background: var(--accent);
       }
-
-      /* --- LIST ITEMS --- */
       .folder-btn {
         padding: 12px 16px;
         display: flex;
@@ -135,7 +113,6 @@
         background: rgba(255, 255, 255, 0.05);
         color: #fff;
       }
-
       .folder-content {
         display: none;
         background: rgba(0, 0, 0, 0.2);
@@ -143,7 +120,6 @@
       .folder-content.open {
         display: block;
       }
-
       .file-btn {
         padding: 10px 16px 10px 24px;
         display: flex;
@@ -172,16 +148,12 @@
       .file-btn.active i {
         color: var(--accent);
       }
-
-      /* Nested Indentation */
       .indent-level-1 .file-btn {
         padding-left: 32px;
       }
       .indent-level-1 .folder-btn {
         padding-left: 24px;
       }
-
-      /* --- MAIN CONTENT --- */
       .main-content {
         flex: 1;
         min-width: 0;
@@ -190,8 +162,6 @@
         position: relative;
         background: #000;
       }
-
-      /* --- LIBRARY SCREEN --- */
       #library-screen {
         background: rgba(5, 5, 5, 0.95);
         backdrop-filter: blur(30px);
@@ -206,8 +176,6 @@
         border-color: var(--accent);
         box-shadow: 0 10px 30px -10px var(--accent-glow);
       }
-
-      /* --- TOAST --- */
       #toast-container {
         position: fixed;
         bottom: 20px;
@@ -249,7 +217,6 @@
         align-items: center;
         justify-content: center;
       }
-
       .toast-message {
         margin: 0 12px;
         color: #e4e4e7;
@@ -257,7 +224,6 @@
         font-weight: 500;
         flex-grow: 1;
       }
-
       .close-btn {
         background: transparent;
         border: none;
@@ -267,13 +233,10 @@
         border-radius: 4px;
         transition: 0.2s;
       }
-
       .close-btn:hover {
         background: rgba(255, 255, 255, 0.1);
         color: white;
       }
-
-      /* Animation */
       .wave-anim {
         display: flex;
         gap: 2px;
@@ -301,8 +264,9 @@
           height: 100%;
         }
       }
-
-      /* Mobile */
+      .none {
+        display: none !important;
+      }
       @media (max-width: 768px) {
         .app-shell {
           flex-direction: column-reverse !important;
@@ -363,7 +327,6 @@
       >
         <i class="fa-solid fa-arrow-left"></i>
       </button>
-
       <div class="w-full max-w-5xl h-full flex flex-col">
         <div
           class="flex flex-col md:flex-row justify-between items-end mb-10 mt-12 shrink-0 gap-6"
@@ -429,9 +392,8 @@
                 id="btn-left"
                 class="py-2 text-xs rounded-lg transition-all"
               >
-                Left
-              </button>
-              <button
+                Left</button
+              ><button
                 onclick="setSidebar('right')"
                 id="btn-right"
                 class="py-2 text-xs rounded-lg transition-all"
@@ -476,8 +438,8 @@
           <div class="relative group">
             <i
               class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-500 text-xs"
-            ></i>
-            <input
+            ></i
+            ><input
               type="text"
               id="search"
               placeholder="Search modules..."
@@ -490,9 +452,7 @@
           class="flex-1 overflow-y-auto custom-scroll pb-10"
         ></div>
       </aside>
-
       <div class="resizer" id="resizer"></div>
-
       <main class="main-content">
         <div
           class="flex-1 relative bg-black w-full h-full flex items-center justify-center overflow-hidden"
@@ -510,7 +470,6 @@
             <p class="vjs-no-js">Enable JS.</p>
           </video>
         </div>
-
         <div
           class="h-[60px] bg-[#050505] border-t border-white/5 flex items-center justify-between px-6 shrink-0 none md:flex"
         >
@@ -518,8 +477,7 @@
             <span
               class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mb-0.5"
               >NOW PLAYING</span
-            >
-            <span
+            ><span
               id="video-title"
               class="truncate text-sm text-gray-300 font-medium"
               >No video selected</span
@@ -538,9 +496,8 @@
               onclick="playPrev()"
               class="w-9 h-9 rounded-full glass-card hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition"
             >
-              <i class="fa-solid fa-backward-step"></i>
-            </button>
-            <button
+              <i class="fa-solid fa-backward-step"></i></button
+            ><button
               onclick="playNext()"
               class="w-9 h-9 rounded-full glass-card hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition"
             >
@@ -554,10 +511,10 @@
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
       // --- CONFIGURATION ---
-      // IMPORTANT: Ab API Key ki zaroorat nahi hai. Sab kuch Backend handle karega.
-      const BACKEND_URL = "https://drive-2ipw.onrender.com";
+      // IMPORTANT: Ab API Key nahi chahiye! Backend list karega.
+      const BACKEND_URL = "https://drive-1-exea.onrender.com";
 
-      const CACHE_PREFIX = "drive_content_v5_"; // Version Bumped to Clear Old Cache
+      const CACHE_PREFIX = "drive_content_v5_"; // Changed to v5 to clear old cache
       const LAST_STATE_KEY = "drive_last_state_v5";
 
       // STATE
@@ -579,16 +536,11 @@
         html5: { vhs: { overrideNative: true }, nativeCaptions: false },
         userActions: { hotkeys: false },
         controlBar: { volumePanel: { inline: false }, subsCapsButton: true },
-        html5: {
-          nativeTextTracks: true,
-        },
       });
 
       // --- INITIALIZATION ---
       async function init() {
         setSidebar(userSettings.sidebar);
-
-        // 1. Check for URL Params (Shared Link Logic)
         const urlParams = new URLSearchParams(window.location.search);
         const sharedCourseId = urlParams.get("c");
         const sharedVideoId = urlParams.get("v");
@@ -602,23 +554,19 @@
             const course = savedCourses.find(
               (c) => c.id === lastState.courseId,
             );
-            if (course) {
-              loadCourse(course, lastState.videoId);
-            } else showLibrary();
+            if (course) loadCourse(course, lastState.videoId);
+            else showLibrary();
           } else showLibrary();
         }
       }
 
       // --- CORE LOGIC: Loading ---
-
       function loadCourseByIndex(index) {
         loadCourse(savedCourses[index]);
       }
 
       async function loadCourse(courseObj, autoPlayVideoId = null) {
         currentCourse = courseObj;
-
-        // UI Updates
         document.getElementById("library-screen").classList.add("none");
         document.getElementById("header-course-name").innerText =
           currentCourse.name;
@@ -633,32 +581,86 @@
           container.innerHTML = data.htmlStr;
           finalizeLoad(autoPlayVideoId);
         } else {
-          container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Syncing Cloud Structure from Server...</div>`;
+          container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Syncing Cloud Structure from Backend...</div>`;
           flatPlaylist = [];
           await fetchCourseContent(currentCourse.id, container);
           finalizeLoad(autoPlayVideoId);
         }
-
         updateURL(currentCourse.id, autoPlayVideoId);
       }
 
-      // --- UPDATED LOGIC: No API Key, Use Backend ---
+      // --- NEW: FETCH FROM BACKEND (No API Key) ---
+      async function fetchCourseContent(rootId, container) {
+        // Backend API call to list files
+        const url = `${BACKEND_URL}/api/list/${rootId}`;
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Backend connection failed");
+          const data = await res.json();
+          if (!data.files) return;
+          container.innerHTML = "";
+          const folders = data.files.filter((f) =>
+            f.mimeType.includes("folder"),
+          );
+          const videos = data.files.filter((f) => f.mimeType.includes("video"));
+          await processNodes(folders, videos, container, rootId);
+
+          localStorage.setItem(
+            CACHE_PREFIX + rootId,
+            JSON.stringify({
+              flatPlaylist: flatPlaylist,
+              htmlStr: container.innerHTML,
+            }),
+          );
+        } catch (e) {
+          console.error(e);
+          container.innerHTML = `<div class="text-red-400 p-4 text-center text-xs">Error connecting to server. <br>Check if backend is running.</div>`;
+        }
+      }
+
+      async function processNodes(folders, videos, container, parentId) {
+        for (const f of folders) {
+          const div = document.createElement("div");
+          div.innerHTML = `<div id="btn-${f.id}" class="folder-btn group" data-id="${f.id}"><div class="flex items-center gap-3 truncate"><i class="fa-regular fa-folder text-violet-400 opacity-60 group-hover:opacity-100 transition"></i><span class="truncate transition-colors">${f.name}</span></div><i class="fa-solid fa-chevron-down text-[10px] chevron transition-transform duration-200 opacity-40"></i></div><div id="folder-${f.id}" class="folder-content pl-2"></div>`;
+          container.appendChild(div);
+          const innerContainer = div.querySelector(`#folder-${f.id}`);
+          innerContainer.classList.add("indent-level-1");
+
+          // Recursion via Backend
+          const res = await fetch(`${BACKEND_URL}/api/list/${f.id}`);
+          const data = await res.json();
+          if (data.files) {
+            const subF = data.files.filter((x) =>
+              x.mimeType.includes("folder"),
+            );
+            const subV = data.files.filter((x) => x.mimeType.includes("video"));
+            await processNodes(subF, subV, innerContainer, f.id);
+          }
+        }
+        for (const v of videos) {
+          flatPlaylist.push({ ...v, parentId: parentId });
+          const div = document.createElement("div");
+          div.id = `vid-${v.id}`;
+          div.className = "file-btn group";
+          div.dataset.id = v.id;
+          div.dataset.search = v.name.toLowerCase();
+          div.innerHTML = `<i class="fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0"></i><span class="truncate">${v.name.replace(/\.mp4/i, "")}</span>`;
+          container.appendChild(div);
+        }
+      }
+
       async function loadSharedCourse(courseId, videoId) {
         document.getElementById("library-screen").classList.add("none");
         const container = document.getElementById("playlist");
         container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Resolving Shared Link...</div>`;
-
         try {
-          // New: Fetch Name from Backend
           const res = await fetch(`${BACKEND_URL}/api/meta/${courseId}`);
           const meta = await res.json();
-
           const ghostCourse = {
             id: courseId,
             name: meta.name || "Shared Course",
           };
           currentCourse = ghostCourse;
-
           document.getElementById("header-course-name").innerText =
             ghostCourse.name;
           document.getElementById("lib-close-btn").style.display = "flex";
@@ -674,13 +676,12 @@
           }
           finalizeLoad(videoId);
         } catch (e) {
-          showToast("Invalid Link or Permission Denied");
+          showToast("Invalid Link or Server Error");
           showLibrary();
         }
       }
 
       function finalizeLoad(autoPlayVideoId) {
-        // Re-attach listeners because innerHTML replaced them
         document
           .querySelectorAll(".folder-btn")
           .forEach((btn) => (btn.onclick = () => toggleFolder(btn.dataset.id)));
@@ -689,96 +690,14 @@
           .forEach(
             (btn) => (btn.onclick = () => playVideoById(btn.dataset.id)),
           );
-
-        if (autoPlayVideoId) {
-          playVideoById(autoPlayVideoId);
-        }
+        if (autoPlayVideoId) playVideoById(autoPlayVideoId);
       }
 
-      // --- UPDATED FETCH LOGIC (BACKEND PROXY) ---
-      async function fetchCourseContent(rootId, container) {
-        // No Google API Call here. We call our Backend.
-        const url = `${BACKEND_URL}/api/list/${rootId}`;
-        try {
-          const res = await fetch(url);
-          const data = await res.json(); // Data structure is { files: [...] }
-
-          if (!data.files) return;
-          container.innerHTML = "";
-
-          const folders = data.files.filter((f) =>
-            f.mimeType.includes("folder"),
-          );
-          const videos = data.files.filter((f) => f.mimeType.includes("video"));
-
-          await processNodes(folders, videos, container, rootId);
-
-          localStorage.setItem(
-            CACHE_PREFIX + rootId,
-            JSON.stringify({
-              flatPlaylist: flatPlaylist,
-              htmlStr: container.innerHTML,
-            }),
-          );
-        } catch (e) {
-          console.error(e);
-          container.innerHTML = `<div class="text-red-500 p-4 text-sm">Server Error. Check Backend.</div>`;
-        }
-      }
-
-      async function processNodes(folders, videos, container, parentId) {
-        for (const f of folders) {
-          const div = document.createElement("div");
-          div.innerHTML = `
-                  <div id="btn-${f.id}" class="folder-btn group" data-id="${f.id}">
-                      <div class="flex items-center gap-3 truncate">
-                          <i class="fa-regular fa-folder text-violet-400 opacity-60 group-hover:opacity-100 transition"></i>
-                          <span class="truncate transition-colors">${f.name}</span>
-                      </div>
-                      <i class="fa-solid fa-chevron-down text-[10px] chevron transition-transform duration-200 opacity-40"></i>
-                  </div>
-                  <div id="folder-${f.id}" class="folder-content pl-2"></div> `;
-          container.appendChild(div);
-
-          const innerContainer = div.querySelector(`#folder-${f.id}`);
-          innerContainer.classList.add("indent-level-1");
-
-          // Recursion: Fetch subfolders using Backend
-          const url = `${BACKEND_URL}/api/list/${f.id}`;
-          const res = await fetch(url);
-          const data = await res.json();
-
-          if (data.files) {
-            const subFolders = data.files.filter((x) =>
-              x.mimeType.includes("folder"),
-            );
-            const subVideos = data.files.filter((x) =>
-              x.mimeType.includes("video"),
-            );
-            await processNodes(subFolders, subVideos, innerContainer, f.id);
-          }
-        }
-
-        for (const v of videos) {
-          flatPlaylist.push({ ...v, parentId: parentId });
-          const div = document.createElement("div");
-          div.id = `vid-${v.id}`;
-          div.className = "file-btn group";
-          div.dataset.id = v.id;
-          div.dataset.search = v.name.toLowerCase();
-          div.innerHTML = `<i class="fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0"></i><span class="truncate">${v.name.replace(/\.mp4/i, "")}</span>`;
-          container.appendChild(div);
-        }
-      }
-
-      // --- PLAYBACK ---
       function playVideoById(videoId) {
         const videoIndex = flatPlaylist.findIndex((v) => v.id === videoId);
         if (videoIndex === -1) return;
         const video = flatPlaylist[videoIndex];
         currentIndex = videoIndex;
-
-        // Backend Video Stream
         player.src({
           type: "video/mp4",
           src: `${BACKEND_URL}/stream/${video.id}`,
@@ -788,15 +707,12 @@
           /\.mp4/i,
           "",
         );
-
-        // UI Active State
         document.querySelectorAll(".file-btn").forEach((b) => {
           b.classList.remove("active");
           b.querySelector(".icon-box").className =
             "fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0";
           b.querySelector(".icon-box").innerHTML = "";
         });
-
         const activeBtn = document.querySelector(
           `.file-btn[data-id="${videoId}"]`,
         );
@@ -805,7 +721,6 @@
           const iconBox = activeBtn.querySelector(".icon-box");
           iconBox.className = "icon-box shrink-0";
           iconBox.innerHTML = `<div class="wave-anim"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
-
           if (video.parentId) {
             let p = document.getElementById(`folder-${video.parentId}`);
             if (p) {
@@ -816,7 +731,6 @@
             }
           }
         }
-
         updateURL(currentCourse.id, videoId);
         localStorage.setItem(
           LAST_STATE_KEY,
@@ -830,7 +744,6 @@
         if (videoId) newUrl += `&v=${videoId}`;
         window.history.pushState({ path: newUrl }, "", newUrl);
       }
-
       function shareCurrentCourse() {
         if (!currentCourse) return;
         const url = window.location.href;
@@ -838,7 +751,6 @@
           showToast("Link Copied! Share it with anyone.");
         });
       }
-
       function toggleFolder(id) {
         const el = document.getElementById(`folder-${id}`);
         const btn = document.getElementById(`btn-${id}`);
@@ -851,7 +763,6 @@
           chevron.style.transform = "rotate(180deg)";
         }
       }
-
       const playNext = () => {
         if (currentIndex + 1 < flatPlaylist.length)
           playVideoById(flatPlaylist[currentIndex + 1].id);
@@ -860,13 +771,10 @@
         if (currentIndex - 1 >= 0)
           playVideoById(flatPlaylist[currentIndex - 1].id);
       };
-
       player.on("ended", () => {
         showToast("Playing next...");
         playNext();
       });
-
-      // --- LIBRARY & UTILS ---
       function initLibrary() {
         const list = document.getElementById("course-list");
         list.innerHTML = "";
@@ -879,17 +787,10 @@
           div.onclick = (e) => {
             if (!e.target.closest("button")) loadCourseByIndex(i);
           };
-          div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-violet-600 transition-colors">${c.name[0].toUpperCase()}</div>
-                    <button onclick="deleteCourse(${i})" class="text-gray-500 hover:text-red-400 p-2 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash-can"></i></button>
-                </div>
-                <div><h3 class="text-lg font-medium text-white leading-tight line-clamp-2">${c.name}</h3><p class="text-xs text-gray-500 font-mono mt-2 opacity-60">ID: ${c.id.slice(0, 6)}</p></div>
-              `;
+          div.innerHTML = `<div class="flex justify-between items-start"><div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-violet-600 transition-colors">${c.name[0].toUpperCase()}</div><button onclick="deleteCourse(${i})" class="text-gray-500 hover:text-red-400 p-2 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash-can"></i></button></div><div><h3 class="text-lg font-medium text-white leading-tight line-clamp-2">${c.name}</h3><p class="text-xs text-gray-500 font-mono mt-2 opacity-60">ID: ${c.id.slice(0, 6)}</p></div>`;
           list.appendChild(div);
         });
       }
-
       function addCourse() {
         const name = document.getElementById("new-course-name").value;
         const link = document.getElementById("new-course-link").value;
@@ -910,8 +811,6 @@
           initLibrary();
         }
       }
-
-      // UI HELPERS
       function showLibrary() {
         window.history.pushState({}, "", window.location.pathname);
         document.getElementById("library-screen").classList.remove("none");
@@ -926,7 +825,6 @@
       function closeSettings() {
         document.getElementById("settings-modal").style.display = "none";
       }
-
       const resizer = document.getElementById("resizer");
       const sidebar = document.getElementById("sidebar");
       let isResizing = false;
@@ -954,22 +852,11 @@
         userSettings.sidebar = pos;
         localStorage.setItem("drive_settings", JSON.stringify(userSettings));
       }
-
       function showToast(msg) {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
         toast.className = "toast";
-        toast.innerHTML = `
-        <div class="toast-card">
-            <div class="status-icon">
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <div class="toast-message">${msg}</div>
-            <button type="button" class="close-btn" onclick="this.closest('.toast').remove()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    `;
+        toast.innerHTML = `<div class="toast-card"><div class="status-icon"><i class="fa-solid fa-check"></i></div><div class="toast-message">${msg}</div><button type="button" class="close-btn" onclick="this.closest('.toast').remove()"><i class="fa-solid fa-xmark"></i></button></div>`;
         container.appendChild(toast);
         requestAnimationFrame(() => toast.classList.add("show"));
         setTimeout(() => {
@@ -977,7 +864,6 @@
           setTimeout(() => toast.remove(), 500);
         }, 3000);
       }
-
       document.getElementById("search").addEventListener("input", (e) => {
         const v = e.target.value.toLowerCase();
         document
@@ -989,7 +875,6 @@
                 : "none"),
           );
       });
-
       document.addEventListener("keydown", (e) => {
         if (e.target.tagName === "INPUT") return;
         const k = e.key.toLowerCase();
@@ -1015,7 +900,6 @@
           else player.currentTime(player.currentTime() - 1.5);
         }
       });
-
       init();
     </script>
   </body>
