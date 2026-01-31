@@ -21,16 +21,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-      /* --- TELEGRAM DARK PALETTE --- */
       :root {
-        --tg-bg-main: #0e1621; /* Main Chat Area */
-        --tg-bg-sidebar: #17212b; /* Sidebar */
-        --tg-item-hover: #202b36; /* Hover State */
-        --tg-active: #2b5278; /* Active State (Blue) */
+        --tg-bg-main: #0e1621;
+        --tg-bg-sidebar: #17212b;
+        --tg-item-hover: #202b36;
+        --tg-active: #2b5278;
         --tg-text: #ffffff;
-        --tg-text-muted: #7f91a4; /* Timestamp/Meta color */
-        --tg-border: #0e1621; /* Separators */
-        --tg-blue: #5288c1; /* Accent Links/Icons */
+        --tg-text-muted: #7f91a4;
+        --tg-blue: #5288c1;
+        --tg-green: #46a758;
       }
 
       body {
@@ -40,114 +39,102 @@
         overflow: hidden;
       }
 
-      /* --- SCROLLBAR (Telegram Style: Thin & Dark) --- */
-      ::-webkit-scrollbar {
-        width: 5px;
+      /* Wave Animation Style */
+      .wave-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 12px;
       }
-      ::-webkit-scrollbar-track {
-        background: transparent;
+      .wave-bar {
+        width: 3px;
+        background: white;
+        animation: wave-anim 0.8s infinite ease-in-out;
       }
-      ::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
+      .wave-bar:nth-child(2) {
+        animation-delay: 0.2s;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 0, 0, 0.4);
+      .wave-bar:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes wave-anim {
+        0%,
+        100% {
+          height: 4px;
+        }
+        50% {
+          height: 12px;
+        }
       }
 
-      /* --- SIDEBAR STYLING --- */
       .tg-sidebar {
         background-color: var(--tg-bg-sidebar);
         border-right: 1px solid #000;
       }
-
       .tg-item {
         padding: 10px 15px;
-        transition: background-color 0.1s ease;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 12px;
+        border-bottom: 1px solid #0e1621;
       }
-
       .tg-item:hover {
         background-color: var(--tg-item-hover);
       }
-
       .tg-item.active {
         background-color: var(--tg-active);
       }
-      .tg-item.active .text-muted {
-        color: #dce3ea;
-      } /* Lighter text on active */
-      .tg-item.active i {
-        color: #fff;
+
+      .progress-mini {
+        height: 2px;
+        background: #242f3d;
+        width: 100%;
+        margin-top: 4px;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .progress-inner {
+        height: 100%;
+        background: var(--tg-blue);
+        width: 0%;
+        transition: width 0.3s;
       }
 
-      /* Avatar Circle Logic */
       .avatar {
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: bold;
-        font-size: 16px;
         flex-shrink: 0;
       }
-      /* Colors for folders to look like Contact Avatars */
       .avatar-blue {
         background: #5288c1;
-        color: white;
       }
       .avatar-green {
         background: #46a758;
-        color: white;
-      }
-      .avatar-purple {
-        background: #8e85ee;
-        color: white;
       }
 
-      /* --- VIDEO PLAYER OVERRIDES --- */
       .video-js .vjs-big-play-button {
-        background-color: rgba(0, 0, 0, 0.5);
-        border: 3px solid #fff;
         border-radius: 50%;
         width: 70px;
         height: 70px;
         line-height: 65px;
-        font-size: 30px;
-        margin-left: -35px;
         top: 50%;
+        left: 50%;
         margin-top: -35px;
-        backdrop-filter: blur(4px);
-      }
-      .video-js .vjs-control-bar {
-        background: rgba(23, 33, 43, 0.9);
-      }
-      .video-js .vjs-play-progress {
-        background-color: var(--tg-blue);
+        margin-left: -35px;
       }
 
-      /* --- UTILS --- */
-      .text-muted {
-        color: var(--tg-text-muted);
-      }
-
-      /* --- RESPONSIVE DRAWER --- */
-      #sidebar {
-        transition: transform 0.25s ease-in-out;
-      }
       @media (max-width: 768px) {
         #sidebar {
           position: absolute;
           height: 100%;
           z-index: 50;
           transform: translateX(-100%);
-          width: 80%;
-          box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+          width: 85%;
         }
         #sidebar.open {
           transform: translateX(0);
@@ -167,59 +154,41 @@
   </head>
   <body class="h-screen flex flex-col md:flex-row">
     <div
-      id="toast-container"
-      class="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-[9999] flex flex-col gap-2 pointer-events-none"
-    ></div>
-
-    <div
       id="library-screen"
       class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0e1621]"
     >
-      <div class="w-full max-w-2xl p-4 flex flex-col h-full md:h-auto">
+      <div class="w-full max-w-2xl p-4">
         <div class="text-center mb-8">
-          <div
-            class="w-20 h-20 bg-[#5288c1] rounded-full mx-auto flex items-center justify-center mb-4 text-3xl shadow-lg"
-          >
-            <i class="fa-brands fa-google-drive text-white"></i>
-          </div>
-          <h1 class="text-2xl font-medium text-white">Drive Player</h1>
-          <p class="text-[#7f91a4] text-sm mt-1">
-            Paste a folder link to start watching
-          </p>
+          <h1 class="text-2xl font-bold">Drive Player</h1>
+          <p class="text-muted">Enter folder details</p>
         </div>
-
-        <div class="bg-[#17212b] p-4 rounded-xl shadow-lg flex gap-2 mb-6">
+        <div class="bg-[#17212b] p-4 rounded-xl flex gap-2 mb-6">
           <input
             type="text"
             id="new-course-name"
-            placeholder="Name"
-            class="bg-[#242f3d] px-4 py-3 text-white outline-none rounded-lg w-1/3 focus:ring-1 ring-[#5288c1]"
+            placeholder="Course Name"
+            class="bg-[#242f3d] p-3 rounded-lg w-1/3 outline-none text-white"
           />
           <input
             type="text"
             id="new-course-link"
-            placeholder="Google Drive Link..."
-            class="bg-[#242f3d] px-4 py-3 text-white outline-none rounded-lg w-full focus:ring-1 ring-[#5288c1]"
+            placeholder="Drive Folder Link"
+            class="bg-[#242f3d] p-3 rounded-lg w-full outline-none text-white"
           />
-          <button
-            onclick="addCourse()"
-            class="bg-[#5288c1] hover:bg-[#4377ae] text-white px-5 rounded-lg font-medium transition"
-          >
-            <i class="fa-solid fa-arrow-right"></i>
+          <button onclick="addCourse()" class="bg-[#5288c1] px-6 rounded-lg">
+            <i class="fa-solid fa-plus"></i>
           </button>
         </div>
-
         <div
           id="course-list"
-          class="flex flex-col gap-2 overflow-y-auto max-h-[50vh]"
+          class="flex flex-col gap-2 max-h-[50vh] overflow-y-auto"
         ></div>
-
         <button
           onclick="closeLibrary()"
           id="close-lib-btn"
-          class="mt-4 text-[#7f91a4] hover:text-white text-sm hidden"
+          class="mt-4 text-muted hidden w-full"
         >
-          Return to Player
+          Back to Player
         </button>
       </div>
     </div>
@@ -232,109 +201,69 @@
         class="w-[350px] tg-sidebar flex flex-col shrink-0 h-full"
       >
         <div
-          class="h-[60px] flex items-center px-4 bg-[#17212b] shrink-0 gap-4"
+          class="h-[60px] flex items-center px-4 bg-[#17212b] shrink-0 gap-3"
         >
-          <button
-            onclick="showLibrary()"
-            class="text-[#7f91a4] hover:text-white"
-          >
+          <button onclick="showLibrary()" class="text-muted hover:text-white">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
-          <div class="flex-1">
-            <h2
-              id="header-course-name"
-              class="font-medium text-white truncate text-base"
-            >
+          <div class="flex-1 min-w-0">
+            <h2 id="header-course-name" class="font-medium truncate">
               Select Course
             </h2>
-            <p class="text-xs text-[#7f91a4]">Online</p>
           </div>
-          <button onclick="toggleSidebar()" class="md:hidden text-[#7f91a4]">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
         </div>
-
         <div class="px-3 py-2">
-          <div class="bg-[#242f3d] rounded-full flex items-center px-4 py-2">
-            <i class="fa-solid fa-magnifying-glass text-[#7f91a4] text-sm"></i>
-            <input
-              type="text"
-              id="search"
-              placeholder="Search"
-              class="bg-transparent border-none outline-none text-white text-sm ml-3 w-full placeholder-[#7f91a4]"
-            />
-          </div>
+          <input
+            type="text"
+            id="search"
+            placeholder="Search videos..."
+            class="w-full bg-[#242f3d] rounded-full px-4 py-2 text-sm outline-none text-white"
+          />
         </div>
-
-        <div id="playlist" class="flex-1 overflow-y-auto custom-scroll"></div>
+        <div id="playlist" class="flex-1 overflow-y-auto"></div>
       </aside>
 
-      <main class="flex-1 flex flex-col relative bg-[#0e1621] min-w-0">
+      <main class="flex-1 flex flex-col bg-black">
         <div
-          class="md:hidden h-[56px] bg-[#17212b] flex items-center px-4 shadow-md z-30 justify-between"
+          class="md:hidden h-[56px] bg-[#17212b] flex items-center px-4 gap-4"
+          onclick="toggleSidebar()"
         >
-          <div
-            class="flex items-center gap-4 cursor-pointer"
-            onclick="toggleSidebar()"
-          >
-            <i class="fa-solid fa-bars text-[#7f91a4] text-lg"></i>
-            <div>
-              <h3
-                class="font-medium text-white text-sm truncate max-w-[200px]"
-                id="mobile-title"
-              >
-                Drive Player
-              </h3>
-              <p class="text-[10px] text-[#5288c1]">Tap for menu</p>
-            </div>
-          </div>
+          <i class="fa-solid fa-bars text-muted"></i>
+          <span id="mobile-title" class="truncate text-sm">Drive Player</span>
         </div>
-
-        <div class="flex-1 flex items-center justify-center bg-black relative">
+        <div class="flex-1 flex items-center justify-center relative">
           <video
             id="my-video"
             class="video-js vjs-fill vjs-big-play-centered"
             controls
             preload="auto"
             playsinline
-          >
-            <p class="vjs-no-js">Enable JS.</p>
-          </video>
+          ></video>
         </div>
-
         <div
-          class="h-[60px] bg-[#17212b] hidden md:flex items-center justify-between px-6 border-t border-[#0e1621]"
+          class="h-[70px] bg-[#17212b] flex items-center justify-between px-6 border-t border-black"
         >
-          <div
-            class="text-sm text-white font-medium truncate w-1/3"
-            id="footer-title"
-          >
-            Ready to play
+          <div id="footer-title" class="text-sm font-medium truncate w-1/3">
+            No video selected
           </div>
-          <div class="flex items-center gap-6">
-            <button
-              onclick="playPrev()"
-              class="text-[#7f91a4] hover:text-[#5288c1] transition"
-            >
-              <i class="fa-solid fa-backward-step fa-lg"></i>
+          <div class="flex items-center gap-5">
+            <button onclick="playPrev()" class="text-muted hover:text-white">
+              <i class="fa-solid fa-backward-step fa-xl"></i>
             </button>
             <button
               onclick="togglePlay()"
-              class="w-10 h-10 rounded-full bg-[#5288c1] text-white flex items-center justify-center hover:bg-[#4377ae] shadow-lg transition"
+              class="w-12 h-12 rounded-full bg-[#5288c1] flex items-center justify-center shadow-lg"
             >
               <i id="play-pause-icon" class="fa-solid fa-play ml-1"></i>
             </button>
-            <button
-              onclick="playNext()"
-              class="text-[#7f91a4] hover:text-[#5288c1] transition"
-            >
-              <i class="fa-solid fa-forward-step fa-lg"></i>
+            <button onclick="playNext()" class="text-muted hover:text-white">
+              <i class="fa-solid fa-forward-step fa-xl"></i>
             </button>
           </div>
           <div class="w-1/3 flex justify-end">
             <button
               onclick="toggleFullscreen()"
-              class="text-[#7f91a4] hover:text-white"
+              class="text-muted hover:text-white"
             >
               <i class="fa-solid fa-expand"></i>
             </button>
@@ -345,265 +274,172 @@
 
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
-      // CONFIG
       const BACKEND_URL = "https://drive-2ipw.onrender.com";
-      const CACHE_PREFIX = "drive_tg_v1_";
-      const LAST_STATE_KEY = "drive_last_tg";
-
       let savedCourses = JSON.parse(
         localStorage.getItem("drive_courses") || "[]",
       );
-      let currentCourse = null;
-      let flatPlaylist = [];
-      let currentIndex = -1;
+      let completedVideos = JSON.parse(
+        localStorage.getItem("completed_videos") || "[]",
+      );
+      let currentCourse = null,
+        flatPlaylist = [],
+        currentIndex = -1;
 
-      const player = videojs("my-video", {
-        fill: true,
-        responsive: true,
-        html5: { vhs: { overrideNative: true } },
+      const player = videojs("my-video");
+
+      // --- 1. KEYBOARD SHORTCUTS ---
+      document.addEventListener("keydown", (e) => {
+        if (e.target.tagName === "INPUT") return;
+        const k = e.key.toLowerCase();
+
+        if (e.code === "Space") {
+          e.preventDefault();
+          togglePlay();
+        }
+        if (k === "f") toggleFullscreen();
+        if (k === "arrowright") player.currentTime(player.currentTime() + 10);
+        if (k === "arrowleft") player.currentTime(player.currentTime() - 10);
+        if (k === "arrowup") {
+          e.preventDefault();
+          player.volume(Math.min(player.volume() + 0.1, 1));
+        }
+        if (k === "arrowdown") {
+          e.preventDefault();
+          player.volume(Math.max(player.volume() - 0.1, 0));
+        }
+        if (k === "n") playNext();
+        if (k === "p") playPrev();
       });
 
-      async function init() {
-        // Check for shared link
-        const urlParams = new URLSearchParams(window.location.search);
-        const sharedCourseId = urlParams.get("c");
-        const sharedVideoId = urlParams.get("v");
+      // --- 2. PROGRESS & COMPLETION LOGIC ---
+      player.on("timeupdate", () => {
+        if (currentIndex === -1) return;
+        const vidId = flatPlaylist[currentIndex].id;
+        const percent = (player.currentTime() / player.duration()) * 100;
 
-        if (sharedCourseId) {
-          await loadSharedCourse(sharedCourseId, sharedVideoId);
-        } else {
-          renderLibrary();
-          const lastState = JSON.parse(localStorage.getItem(LAST_STATE_KEY));
-          if (savedCourses.length > 0) {
-            if (lastState && lastState.courseId) {
-              const c = savedCourses.find((x) => x.id === lastState.courseId);
-              if (c) loadCourse(c, lastState.videoId);
-            }
-          }
+        // Update Mini Progress Bar in Sidebar
+        const bar = document.querySelector(`#vid-${vidId} .progress-inner`);
+        if (bar) bar.style.width = percent + "%";
+
+        // Mark as Finished (if > 90%)
+        if (percent > 90 && !completedVideos.includes(vidId)) {
+          completedVideos.push(vidId);
+          localStorage.setItem(
+            "completed_videos",
+            JSON.stringify(completedVideos),
+          );
+          updateStatusIcon(vidId, true);
+        }
+      });
+
+      function updateStatusIcon(vidId, isDone) {
+        const iconBox = document.querySelector(`#vid-${vidId} .icon-box`);
+        if (!iconBox) return;
+        if (isDone) {
+          iconBox.innerHTML = `<i class="fa-solid fa-check text-xs text-white"></i>`;
+          iconBox.classList.add("bg-green-500");
+          iconBox.classList.remove("bg-[#242f3d]");
         }
       }
 
-      function renderLibrary() {
-        const list = document.getElementById("course-list");
-        list.innerHTML = "";
-        savedCourses.forEach((c, i) => {
-          const div = document.createElement("div");
-          div.className =
-            "bg-[#17212b] p-3 rounded-lg flex items-center justify-between cursor-pointer hover:bg-[#202b36] transition group";
-          div.onclick = (e) => {
-            if (!e.target.closest("button")) loadCourse(c);
-          };
-          div.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="avatar avatar-blue">${c.name[0].toUpperCase()}</div>
-                    <div>
-                        <div class="text-white font-medium text-sm line-clamp-1">${c.name}</div>
-                        <div class="text-[#7f91a4] text-xs">Tap to resume</div>
-                    </div>
-                </div>
-                <button onclick="deleteCourse(${i})" class="text-[#7f91a4] hover:text-red-400 opacity-0 group-hover:opacity-100 px-2"><i class="fa-solid fa-trash"></i></button>
-            `;
-          list.appendChild(div);
-        });
-      }
-
+      // --- 3. UI RENDERING ---
       async function loadCourse(courseObj, videoId = null) {
         currentCourse = courseObj;
         document.getElementById("library-screen").classList.add("hidden");
-        document.getElementById("close-lib-btn").classList.remove("hidden");
         document.getElementById("header-course-name").innerText =
           courseObj.name;
 
         const container = document.getElementById("playlist");
-        const cached = localStorage.getItem(CACHE_PREFIX + courseObj.id);
-
-        if (cached) {
-          const data = JSON.parse(cached);
-          flatPlaylist = data.flatPlaylist;
-          container.innerHTML = data.htmlStr;
-          finalizeLoad(videoId);
-        } else {
-          container.innerHTML = `<div class="p-5 text-center text-[#7f91a4] text-sm">Updating...</div>`;
-          flatPlaylist = [];
-          await fetchCourseContent(courseObj.id, container);
-          finalizeLoad(videoId);
-        }
+        container.innerHTML = `<div class="p-5 text-center text-muted">Loading Playlist...</div>`;
+        flatPlaylist = [];
+        await fetchCourseContent(courseObj.id, container);
+        finalizeUI();
+        if (videoId) playVideoById(videoId);
       }
 
       async function fetchCourseContent(rootId, container) {
         try {
           const res = await fetch(`${BACKEND_URL}/api/list/${rootId}`);
-          if (!res.ok) throw new Error("Net Err");
           const data = await res.json();
-          if (!data.files) return;
           container.innerHTML = "";
-          const folders = data.files.filter((f) =>
-            f.mimeType.includes("folder"),
-          );
+
+          // Filter videos and show them
           const videos = data.files.filter((f) => f.mimeType.includes("video"));
-          await processNodes(folders, videos, container, rootId);
-          localStorage.setItem(
-            CACHE_PREFIX + rootId,
-            JSON.stringify({ flatPlaylist, htmlStr: container.innerHTML }),
-          );
-        } catch (e) {
-          container.innerHTML = `<div class="text-red-400 p-4 text-center text-xs">Connection Error</div>`;
-        }
-      }
-
-      async function processNodes(folders, videos, container, parentId) {
-        // Folders as "Groups"
-        for (const f of folders) {
-          const div = document.createElement("div");
-          div.innerHTML = `
-                <div id="btn-${f.id}" class="tg-item group" data-id="${f.id}">
-                    <div class="avatar avatar-green w-8 h-8 text-xs"><i class="fa-solid fa-folder"></i></div>
+          videos.forEach((v) => {
+            flatPlaylist.push(v);
+            const isDone = completedVideos.includes(v.id);
+            const div = document.createElement("div");
+            div.id = `vid-${v.id}`;
+            div.className = "tg-item file-btn group";
+            div.innerHTML = `
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 icon-box ${isDone ? "bg-green-500" : "bg-[#242f3d]"}">
+                        ${isDone ? '<i class="fa-solid fa-check text-xs text-white"></i>' : '<i class="fa-solid fa-play text-xs text-[#5288c1]"></i>'}
+                    </div>
                     <div class="flex-1 min-w-0">
-                        <div class="text-sm font-medium text-white truncate">${f.name}</div>
-                        <div class="text-xs text-muted truncate">Folder</div>
+                        <div class="text-sm font-medium truncate">${v.name.replace(/\.[^/.]+$/, "")}</div>
+                        <div class="progress-mini"><div class="progress-inner"></div></div>
                     </div>
-                    <i class="fa-solid fa-chevron-down text-xs text-muted opacity-50 chevron"></i>
-                </div>
-                <div id="folder-${f.id}" class="hidden pl-2 bg-[#0e1621] border-l-2 border-[#17212b]"></div>
-            `;
-          container.appendChild(div);
-
-          // Recursive fetch
-          const inner = div.querySelector(`#folder-${f.id}`);
-          const res = await fetch(`${BACKEND_URL}/api/list/${f.id}`);
-          const data = await res.json();
-          if (data.files) {
-            const subF = data.files.filter((x) =>
-              x.mimeType.includes("folder"),
-            );
-            const subV = data.files.filter((x) => x.mimeType.includes("video"));
-            await processNodes(subF, subV, inner, f.id);
-          }
-        }
-
-        // Videos as "Messages"
-        for (const v of videos) {
-          flatPlaylist.push({ ...v, parentId });
-          const div = document.createElement("div");
-          div.id = `vid-${v.id}`;
-          div.dataset.id = v.id;
-          div.className = "tg-item file-btn";
-          div.dataset.search = v.name.toLowerCase();
-          div.innerHTML = `
-                <div class="w-10 h-10 rounded-full bg-[#242f3d] flex items-center justify-center text-[#5288c1] shrink-0 icon-box">
-                    <i class="fa-solid fa-play text-sm"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-sm text-white truncate leading-tight">${v.name.replace(/\.mp4/i, "")}</div>
-                    <div class="text-xs text-muted mt-1 flex items-center gap-1">
-                        <i class="fa-regular fa-clock text-[10px]"></i> Video
-                    </div>
-                </div>
-            `;
-          container.appendChild(div);
+                `;
+            div.onclick = () => playVideoById(v.id);
+            container.appendChild(div);
+          });
+        } catch (e) {
+          container.innerHTML = "Error loading files.";
         }
       }
 
-      function finalizeLoad(videoId) {
-        document.querySelectorAll(".tg-item").forEach((el) => {
-          if (el.classList.contains("file-btn")) {
-            el.onclick = () => playVideoById(el.dataset.id);
-          } else {
-            el.onclick = () => {
-              const fid = el.dataset.id;
-              const content = document.getElementById(`folder-${fid}`);
-              const chev = el.querySelector(".chevron");
-              if (content.classList.contains("hidden")) {
-                content.classList.remove("hidden");
-                chev.style.transform = "rotate(180deg)";
-              } else {
-                content.classList.add("hidden");
-                chev.style.transform = "rotate(0deg)";
-              }
-            };
-          }
-        });
-        if (videoId) playVideoById(videoId);
-      }
-
-      function playVideoById(videoId) {
-        const idx = flatPlaylist.findIndex((x) => x.id === videoId);
+      function playVideoById(id) {
+        const idx = flatPlaylist.findIndex((x) => x.id === id);
         if (idx === -1) return;
         currentIndex = idx;
-        const video = flatPlaylist[idx];
+        const v = flatPlaylist[idx];
 
-        player.src({
-          type: "video/mp4",
-          src: `${BACKEND_URL}/stream/${video.id}`,
-        });
-        player.play().catch(() => {});
+        player.src({ type: "video/mp4", src: `${BACKEND_URL}/stream/${v.id}` });
+        player.play();
 
-        // Update Text
-        const title = video.name.replace(/\.mp4/i, "");
-        document.getElementById("footer-title").innerText = title;
-        if (document.getElementById("mobile-title"))
-          document.getElementById("mobile-title").innerText = title;
+        // UI Updates
+        document.getElementById("footer-title").innerText = v.name;
+        document.getElementById("mobile-title").innerText = v.name;
 
-        // Active State UI
-        document.querySelectorAll(".tg-item").forEach((b) => {
-          b.classList.remove("active");
-          if (b.classList.contains("file-btn")) {
-            b.querySelector(".icon-box").className =
-              "w-10 h-10 rounded-full bg-[#242f3d] flex items-center justify-center text-[#5288c1] shrink-0 icon-box";
-            b.querySelector(".icon-box").innerHTML =
-              `<i class="fa-solid fa-play text-sm"></i>`;
+        // Remove active & Reset others
+        document.querySelectorAll(".tg-item").forEach((el) => {
+          el.classList.remove("active");
+          const box = el.querySelector(".icon-box");
+          const vid = el.id.replace("vid-", "");
+          if (!completedVideos.includes(vid)) {
+            box.innerHTML = `<i class="fa-solid fa-play text-xs text-[#5288c1]"></i>`;
+            box.className =
+              "w-10 h-10 rounded-full flex items-center justify-center shrink-0 icon-box bg-[#242f3d]";
           }
         });
 
-        const activeBtn = document.getElementById(`vid-${videoId}`);
-        if (activeBtn) {
-          activeBtn.classList.add("active");
-          activeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
-          // Change Icon to Pause/Wave
-          activeBtn.querySelector(".icon-box").className =
-            "w-10 h-10 rounded-full bg-[#5288c1] flex items-center justify-center text-white shrink-0 icon-box shadow-md";
-          activeBtn.querySelector(".icon-box").innerHTML =
-            `<i class="fa-solid fa-chart-simple"></i>`;
-
-          // Open parent
-          if (video.parentId) {
-            const p = document.getElementById(`folder-${video.parentId}`);
-            if (p) p.classList.remove("hidden");
-          }
-        }
-
-        updateURL(currentCourse.id, videoId);
-        localStorage.setItem(
-          LAST_STATE_KEY,
-          JSON.stringify({ courseId: currentCourse.id, videoId }),
-        );
-      }
-
-      // Utils
-      function addCourse() {
-        const name = document.getElementById("new-course-name").value;
-        const link = document.getElementById("new-course-link").value;
-        const match = link.match(/(?:folders\/|id=)([\w-]+)/);
-        if (name && match) {
-          savedCourses.push({ name, id: match[1] });
-          localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
-          renderLibrary();
-          document.getElementById("new-course-name").value = "";
-          document.getElementById("new-course-link").value = "";
+        // Set Active & Add Wave Animation
+        const activeItem = document.getElementById(`vid-${id}`);
+        if (activeItem) {
+          activeItem.classList.add("active");
+          const box = activeItem.querySelector(".icon-box");
+          box.innerHTML = `<div class="wave-container"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>`;
+          box.className =
+            "w-10 h-10 rounded-full flex items-center justify-center shrink-0 icon-box bg-[#5288c1]";
+          activeItem.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }
 
-      function deleteCourse(i) {
-        if (confirm("Delete?")) {
-          localStorage.removeItem(CACHE_PREFIX + savedCourses[i].id);
-          savedCourses.splice(i, 1);
-          localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
-          renderLibrary();
-        }
+      // --- HELPER FUNCTIONS ---
+      function togglePlay() {
+        player.paused() ? player.play() : player.pause();
       }
-
-      function updateURL(c, v) {
-        window.history.pushState({}, "", `?c=${c}&v=${v}`);
+      function playNext() {
+        if (currentIndex < flatPlaylist.length - 1)
+          playVideoById(flatPlaylist[currentIndex + 1].id);
+      }
+      function playPrev() {
+        if (currentIndex > 0) playVideoById(flatPlaylist[currentIndex - 1].id);
+      }
+      function toggleFullscreen() {
+        player.isFullscreen()
+          ? player.exitFullscreen()
+          : player.requestFullscreen();
       }
       function toggleSidebar() {
         document.getElementById("sidebar").classList.toggle("open");
@@ -618,57 +454,39 @@
           document.getElementById("library-screen").classList.add("hidden");
       }
 
-      // Shared Link Logic (Skeleton)
-      async function loadSharedCourse(cid, vid) {
-        currentCourse = { id: cid, name: "Shared" };
-        document.getElementById("library-screen").classList.add("hidden");
-        const container = document.getElementById("playlist");
-        container.innerHTML = "Loading...";
-        await fetchCourseContent(cid, container);
-        finalizeLoad(vid);
+      function addCourse() {
+        const name = document.getElementById("new-course-name").value;
+        const link = document.getElementById("new-course-link").value;
+        const idMatch = link.match(/[-\w]{25,}/);
+        if (name && idMatch) {
+          savedCourses.push({ name, id: idMatch[0] });
+          localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
+          renderLibrary();
+        }
       }
 
-      // Keyboard
-      document.addEventListener("keydown", (e) => {
-        if (e.target.tagName === "INPUT") return;
-        const k = e.key.toLowerCase();
-        if (e.code === "Space") {
-          e.preventDefault();
-          player.paused() ? player.play() : player.pause();
-        }
-        if (k === "f") {
-          e.preventDefault();
-          player.isFullscreen()
-            ? player.exitFullscreen()
-            : player.requestFullscreen();
-        }
-        if (k === "arrowright") {
-          e.preventDefault();
-          e.shiftKey
-            ? playNext()
-            : player.currentTime(player.currentTime() + 5);
-        }
-        if (k === "arrowleft") {
-          e.preventDefault();
-          player.currentTime(player.currentTime() - 5);
-        }
-      });
+      function renderLibrary() {
+        const list = document.getElementById("course-list");
+        list.innerHTML = "";
+        savedCourses.forEach((c, i) => {
+          const div = document.createElement("div");
+          div.className =
+            "bg-[#17212b] p-4 rounded-lg flex justify-between items-center cursor-pointer";
+          div.innerHTML = `<span>${c.name}</span><button onclick="deleteCourse(${i})" class="text-red-400"><i class="fa-solid fa-trash"></i></button>`;
+          div.onclick = (e) => {
+            if (e.target.tagName !== "I" && e.target.tagName !== "BUTTON")
+              loadCourse(c);
+          };
+          list.appendChild(div);
+        });
+      }
 
-      // Controls
-      const togglePlay = () =>
-        player.paused() ? player.play() : player.pause();
-      const playNext = () => {
-        if (currentIndex + 1 < flatPlaylist.length)
-          playVideoById(flatPlaylist[currentIndex + 1].id);
-      };
-      const playPrev = () => {
-        if (currentIndex - 1 >= 0)
-          playVideoById(flatPlaylist[currentIndex - 1].id);
-      };
-      const toggleFullscreen = () =>
-        player.isFullscreen()
-          ? player.exitFullscreen()
-          : player.requestFullscreen();
+      function deleteCourse(i) {
+        savedCourses.splice(i, 1);
+        localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
+        renderLibrary();
+      }
+
       player.on(
         "play",
         () =>
@@ -683,15 +501,7 @@
       );
       player.on("ended", playNext);
 
-      // Search
-      document.getElementById("search").addEventListener("input", (e) => {
-        const v = e.target.value.toLowerCase();
-        document.querySelectorAll(".file-btn").forEach((el) => {
-          el.style.display = el.dataset.search.includes(v) ? "flex" : "none";
-        });
-      });
-
-      init();
+      renderLibrary();
     </script>
   </body>
 </html>
