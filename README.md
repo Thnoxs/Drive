@@ -8,7 +8,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/heliomarpm/udemy-downloader-gui/badge)](https://www.codefactor.io/repository/github/heliomarpm/udemy-downloader-gui) ![CodeQL](https://github.com/heliomarpm/udemy-downloader-gui/actions/workflows/codeql-analysis.yml/badge.svg) ![Publish](https://github.com/heliomarpm/udemy-downloader-gui/actions/workflows/publish.yml/badge.svg) <a href="https://navto.me/heliomarpm" target="_blank"><img src="https://navto.me/assets/navigatetome-brand.png" width="32"/></a>
 
 </h1>
-
 <p align="center">
   <!-- PayPal -->
   <a href="https://bit.ly/paypal-udeler" target="_blank" rel="noopener noreferrer">
@@ -53,9 +52,5 @@
   ![](demoVideo.gif)
   
   </div>
-
----
-
-### 🛠️ Step 1: What to Download Before Running (Prerequisites)
 
 
