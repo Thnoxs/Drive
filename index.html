@@ -18,7 +18,6 @@
       rel="stylesheet"
     />
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-
     <style>
       :root {
         --text-pri: #ffffff;
@@ -26,20 +25,15 @@
         --accent: #8b5cf6; /* Violet Accent */
         --accent-glow: rgba(139, 92, 246, 0.4);
       }
-
       * {
         box-sizing: border-box;
         outline: none;
         -webkit-tap-highlight-color: transparent;
-        user-select: none;
-      }
-      .no-select {
-        user-select: none;
       }
       body {
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10+ */
-        user-select: none; /* Standard syntax */
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         margin: 0;
         font-family: "Outfit", sans-serif;
         overflow: hidden;
@@ -54,7 +48,6 @@
         background-size: cover;
         display: flex;
       }
-
       /* --- GLASS UTILS --- */
       .glass-panel {
         background: rgba(10, 10, 10, 0.7);
@@ -67,7 +60,6 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(10px);
       }
-
       /* Scrollbars */
       ::-webkit-scrollbar {
         width: 4px;
@@ -82,7 +74,6 @@
       ::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.2);
       }
-
       /* --- LAYOUT --- */
       .app-shell {
         display: flex;
@@ -94,7 +85,6 @@
       .app-shell.sidebar-right {
         flex-direction: row-reverse;
       }
-
       /* --- SIDEBAR --- */
       .sidebar {
         width: 340px;
@@ -105,7 +95,6 @@
         flex-shrink: 0;
         z-index: 20;
       }
-
       .resizer {
         width: 2px;
         background: rgba(255, 255, 255, 0.05);
@@ -117,7 +106,6 @@
       .resizer:hover {
         background: var(--accent);
       }
-
       /* --- LIST ITEMS --- */
       .folder-btn {
         padding: 12px 16px;
@@ -134,7 +122,6 @@
         background: rgba(255, 255, 255, 0.05);
         color: #fff;
       }
-
       .folder-content {
         display: none;
         background: rgba(0, 0, 0, 0.2);
@@ -142,9 +129,8 @@
       .folder-content.open {
         display: block;
       }
-
       .file-btn {
-        padding: 10px 16px 10px 24px;
+        padding: 12px 16px 12px 24px;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -153,6 +139,7 @@
         cursor: pointer;
         transition: 0.2s;
         border-left: 2px solid transparent;
+        position: relative;
       }
       .file-btn:hover {
         background: rgba(255, 255, 255, 0.03);
@@ -168,10 +155,9 @@
         color: #fff;
         font-weight: 500;
       }
-      .file-btn.active i {
+      .file-btn.active i.fa-circle-play {
         color: var(--accent);
       }
-
       /* Nested Indentation */
       .indent-level-1 .file-btn {
         padding-left: 32px;
@@ -179,7 +165,6 @@
       .indent-level-1 .folder-btn {
         padding-left: 24px;
       }
-
       /* --- MAIN CONTENT --- */
       .main-content {
         flex: 1;
@@ -189,7 +174,6 @@
         position: relative;
         background: #000;
       }
-
       /* --- LIBRARY SCREEN --- */
       #library-screen {
         background: rgba(5, 5, 5, 0.95);
@@ -205,7 +189,6 @@
         border-color: var(--accent);
         box-shadow: 0 10px 30px -10px var(--accent-glow);
       }
-
       /* --- TOAST --- */
       #toast-container {
         position: fixed;
@@ -248,7 +231,6 @@
         align-items: center;
         justify-content: center;
       }
-
       .toast-message {
         margin: 0 12px;
         color: #e4e4e7;
@@ -256,7 +238,6 @@
         font-weight: 500;
         flex-grow: 1;
       }
-
       .close-btn {
         background: transparent;
         border: none;
@@ -266,12 +247,10 @@
         border-radius: 4px;
         transition: 0.2s;
       }
-
       .close-btn:hover {
         background: rgba(255, 255, 255, 0.1);
         color: white;
       }
-
       /* Animation */
       .wave-anim {
         display: flex;
@@ -300,23 +279,30 @@
           height: 100%;
         }
       }
-
-      /* Mobile */
+      /* Mobile / YouTube Style Responsive */
       @media (max-width: 768px) {
+        body {
+          overflow: hidden;
+        }
         .app-shell {
-          flex-direction: column-reverse !important;
+          flex-direction: column !important; /* Stack vertically */
+          overflow: hidden;
         }
         .main-content {
-          height: 35vh !important;
           flex: none;
           width: 100%;
+          aspect-ratio: 16 / 9; /* YouTube fit ratio */
+          height: auto !important;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          z-index: 50;
+          position: sticky;
+          top: 0;
         }
         .sidebar {
           width: 100% !important;
-          height: 65vh !important;
+          flex: 1; /* Takes remaining height */
+          height: auto !important;
           border-right: none;
-          flex: none;
         }
         .resizer,
         header {
@@ -326,14 +312,26 @@
           top: 10px;
           right: 10px;
         }
+        /* Mobile player header control hide */
+        .main-content > div:nth-child(2) {
+          display: none !important;
+        }
       }
     </style>
   </head>
   <body>
+    <!-- Top Action Buttons -->
     <div
       id="floating-settings"
-      class="flex w-full justify-end absolute top-5 right-6 z-100 items-start"
+      class="flex w-full justify-end absolute top-5 right-6 z-[100] items-start gap-2"
     >
+      <button
+        onclick="openDashboard()"
+        class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white transition hover:bg-white/10"
+        title="Learning Dashboard"
+      >
+        <i class="fa-solid fa-chart-pie"></i>
+      </button>
       <button
         onclick="shareCurrentCourse()"
         class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white transition hover:bg-white/10"
@@ -351,6 +349,37 @@
 
     <div id="toast-container"></div>
 
+    <!-- Dashboard Modal -->
+    <div
+      id="dashboard-modal"
+      class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/80 backdrop-blur-md p-4"
+    >
+      <div
+        class="glass-card p-6 md:p-8 rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl"
+        style="background: #111"
+      >
+        <div class="flex justify-between items-center mb-6 shrink-0">
+          <h2 class="text-xl md:text-2xl font-light text-white">
+            <i class="fa-solid fa-chart-pie text-violet-500 mr-3"></i> Learning
+            Dashboard
+          </h2>
+          <button
+            onclick="closeDashboard()"
+            class="text-gray-400 hover:text-white bg-white/5 w-8 h-8 rounded-full flex items-center justify-center transition"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div
+          id="dashboard-content"
+          class="flex-1 overflow-y-auto custom-scroll space-y-4 pr-2"
+        >
+          <!-- Progress cards injected here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Library Screen -->
     <div
       id="library-screen"
       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center p-6 none"
@@ -362,14 +391,17 @@
       >
         <i class="fa-solid fa-arrow-left"></i>
       </button>
-
       <div class="w-full max-w-5xl h-full flex flex-col">
         <div
           class="flex flex-col md:flex-row justify-between items-end mb-10 mt-12 shrink-0 gap-6"
         >
           <div class="text-center">
-            <h1 class="text-4xl font-light text-white tracking-tight mb-2"></h1>
-            <p class="text-gray-400 text-sm font-light"></p>
+            <h1 class="text-4xl font-light text-white tracking-tight mb-2">
+              Drive Player
+            </h1>
+            <p class="text-gray-400 text-sm font-light">
+              Stream directly from Google Drive
+            </p>
           </div>
           <div class="flex glass-card p-1 rounded-xl w-full md:w-auto">
             <input
@@ -381,7 +413,7 @@
             <input
               type="text"
               id="new-course-link"
-              placeholder="Paste Drive Link..."
+              placeholder="Paste Drive Folder Link..."
               class="bg-transparent text-white px-4 py-2 text-sm w-full md:w-64 outline-none"
             />
             <button
@@ -399,6 +431,7 @@
       </div>
     </div>
 
+    <!-- Settings Modal -->
     <div
       id="settings-modal"
       class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/60 backdrop-blur-sm"
@@ -420,7 +453,7 @@
           <div>
             <label
               class="text-gray-500 text-xs font-bold uppercase mb-2 block tracking-wider"
-              >Sidebar</label
+              >Sidebar Position</label
             >
             <div class="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
               <button
@@ -454,6 +487,7 @@
       </div>
     </div>
 
+    <!-- Main App Shell -->
     <div class="app-shell" id="app-shell">
       <aside class="sidebar glass-panel" id="sidebar">
         <div class="p-4 border-b border-white/5">
@@ -509,7 +543,6 @@
             <p class="vjs-no-js">Enable JS.</p>
           </video>
         </div>
-
         <div
           class="h-[60px] bg-[#050505] border-t border-white/5 flex items-center justify-between px-6 shrink-0 none md:flex"
         >
@@ -552,10 +585,8 @@
 
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
-      // CONFIG - Isko apne server URL se replace kar dena agar deploy kare toh
-      // Local testing ke liye: http://localhost:3000
+      // CONFIG
       const BACKEND_URL = "https://drive-2ipw.onrender.com";
-
       const CACHE_PREFIX = "drive_content_v3_";
       const LAST_STATE_KEY = "drive_last_state";
 
@@ -566,38 +597,43 @@
       let userSettings = JSON.parse(
         localStorage.getItem("drive_settings") || '{"sidebar": "left"}',
       );
+      let metaCache = JSON.parse(
+        localStorage.getItem("drive_meta_cache") || "{}",
+      );
+      let progressData = JSON.parse(
+        localStorage.getItem("drive_progress") || "{}",
+      );
+
       let currentCourse = null;
       let flatPlaylist = [];
       let currentIndex = -1;
-      let currentOpenFolderId = null;
+      let lastSavedPct = 0;
+      let globalVideoCounter = 1; // Used for unified numbering
 
       // INIT PLAYER
       const player = videojs("my-video", {
         fill: true,
         responsive: true,
-        playbackRates: [0.5, 1, 1.1, 1.2, 1.3, 1.4, 2],
-        html5: { vhs: { overrideNative: true }, nativeCaptions: false },
-        userActions: { hotkeys: false },
-        controlBar: { volumePanel: { inline: false }, subsCapsButton: true },
+        playbackRates: [0.5, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 2],
         html5: {
+          vhs: { overrideNative: true },
+          nativeCaptions: false,
           nativeTextTracks: true,
         },
+        userActions: { hotkeys: false },
+        controlBar: { volumePanel: { inline: false }, subsCapsButton: true },
       });
 
       // --- INITIALIZATION ---
       async function init() {
         setSidebar(userSettings.sidebar);
-
-        // 1. Check for URL Params (Shared Link Logic)
         const urlParams = new URLSearchParams(window.location.search);
         const sharedCourseId = urlParams.get("c");
         const sharedVideoId = urlParams.get("v");
 
         if (sharedCourseId) {
-          // "Ghost" Load: Don't need to add to local library to play
           await loadSharedCourse(sharedCourseId, sharedVideoId);
         } else {
-          // Normal Flow
           initLibrary();
           const lastState = JSON.parse(localStorage.getItem(LAST_STATE_KEY));
           if (lastState && lastState.courseId) {
@@ -612,17 +648,12 @@
       }
 
       // --- CORE LOGIC: Loading ---
-
-      // Load from Library
       function loadCourseByIndex(index) {
         loadCourse(savedCourses[index]);
       }
 
-      // Universal Load Function
       async function loadCourse(courseObj, autoPlayVideoId = null) {
         currentCourse = courseObj;
-
-        // UI Updates
         document.getElementById("library-screen").style.display = "none";
         document.getElementById("header-course-name").innerText =
           currentCourse.name;
@@ -631,7 +662,6 @@
         const container = document.getElementById("playlist");
         const cached = localStorage.getItem(CACHE_PREFIX + currentCourse.id);
 
-        // Check Cache
         if (cached) {
           const data = JSON.parse(cached);
           flatPlaylist = data.flatPlaylist;
@@ -640,38 +670,37 @@
         } else {
           container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Syncing Cloud Structure...</div>`;
           flatPlaylist = [];
+          globalVideoCounter = 1;
           await fetchCourseContent(currentCourse.id, container);
           finalizeLoad(autoPlayVideoId);
         }
-
-        // Update URL to reflect current course (for sharing)
         updateURL(currentCourse.id, autoPlayVideoId);
       }
 
-      // Specific Logic for Shared Links (Fetches Name first)
       async function loadSharedCourse(courseId, videoId) {
         document.getElementById("library-screen").style.display = "none";
         const container = document.getElementById("playlist");
-        container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Resolving Shared Link...</div>`;
+        container.innerHTML = `<div class="p-8 text-center text-gray-500 text-xs animate-pulse">Resolving Link...</div>`;
 
         try {
-          // 1. Fetch Course Name from YOUR BACKEND API
-          const res = await fetch(`${BACKEND_URL}/api/meta/${courseId}`);
-          if (!res.ok) throw new Error("Meta fetch failed");
-          const meta = await res.json();
+          // Check Meta Cache to prevent redundant backend request
+          let ghostCourse;
+          if (metaCache[courseId]) {
+            ghostCourse = { id: courseId, name: metaCache[courseId] };
+          } else {
+            const res = await fetch(`${BACKEND_URL}/api/meta/${courseId}`);
+            if (!res.ok) throw new Error("Meta fetch failed");
+            const meta = await res.json();
+            metaCache[courseId] = meta.name || "Shared Course";
+            localStorage.setItem("drive_meta_cache", JSON.stringify(metaCache));
+            ghostCourse = { id: courseId, name: metaCache[courseId] };
+          }
 
-          const ghostCourse = {
-            id: courseId,
-            name: meta.name || "Shared Course",
-          };
           currentCourse = ghostCourse;
-
-          // 2. Load Content
           document.getElementById("header-course-name").innerText =
             ghostCourse.name;
           document.getElementById("lib-close-btn").style.display = "flex";
 
-          // Bypass cache for shared links to ensure freshness? Or use cache? Let's use cache for speed.
           const cached = localStorage.getItem(CACHE_PREFIX + courseId);
           if (cached) {
             const data = JSON.parse(cached);
@@ -679,6 +708,7 @@
             container.innerHTML = data.htmlStr;
           } else {
             flatPlaylist = [];
+            globalVideoCounter = 1;
             await fetchCourseContent(courseId, container);
           }
           finalizeLoad(videoId);
@@ -690,7 +720,6 @@
       }
 
       function finalizeLoad(autoPlayVideoId) {
-        // Re-attach listeners
         document
           .querySelectorAll(".folder-btn")
           .forEach((btn) => (btn.onclick = () => toggleFolder(btn.dataset.id)));
@@ -700,33 +729,42 @@
             (btn) => (btn.onclick = () => playVideoById(btn.dataset.id)),
           );
 
-        // Auto Play Logic
+        // Inject progress UI dynamically into cached HTML
+        updateProgressUI();
+
         if (autoPlayVideoId) {
           playVideoById(autoPlayVideoId);
-        } else if (flatPlaylist.length > 0) {
-          // Don't auto play 1st video, just wait.
         }
       }
 
-      // --- DRIVE API FETCH (UPDATED TO USE BACKEND) ---
+      // --- DRIVE API FETCH (NATURAL SORT + CONTINUOUS NUMBERING) ---
       async function fetchCourseContent(rootId, container) {
-        // Updated to use your Backend API
         const url = `${BACKEND_URL}/api/list/${rootId}`;
-
         try {
           const res = await fetch(url);
           if (!res.ok) throw new Error("Backend Fetch Failed");
           const data = await res.json();
-
           if (!data.files) return;
 
           container.innerHTML = "";
-          const folders = data.files.filter((f) =>
-            f.mimeType.includes("folder"),
-          );
-          const videos = data.files.filter((f) => f.mimeType.includes("video"));
+
+          // Natural sorting algorithm so 1, 2, 10 order correctly instead of 1, 10, 2
+          const naturalSort = (a, b) =>
+            a.name.localeCompare(b.name, undefined, {
+              numeric: true,
+              sensitivity: "base",
+            });
+
+          const folders = data.files
+            .filter((f) => f.mimeType.includes("folder"))
+            .sort(naturalSort);
+          const videos = data.files
+            .filter((f) => f.mimeType.includes("video"))
+            .sort(naturalSort);
+
           await processNodes(folders, videos, container, rootId);
 
+          // Cache structured layout so it doesn't reload heavily
           localStorage.setItem(
             CACHE_PREFIX + rootId,
             JSON.stringify({
@@ -744,51 +782,196 @@
         for (const f of folders) {
           const div = document.createElement("div");
           div.innerHTML = `
-                  <div id="btn-${f.id}" class="folder-btn group" data-id="${f.id}">
-                      <div class="flex items-center gap-3 truncate">
-                          <i class="fa-regular fa-folder text-violet-400 opacity-60 group-hover:opacity-100 transition"></i>
-                          <span class="truncate transition-colors">${f.name}</span>
-                      </div>
-                      <i class="fa-solid fa-chevron-down text-[10px] chevron transition-transform duration-200 opacity-40"></i>
-                  </div>
-                  <div id="folder-${f.id}" class="folder-content pl-2"></div> `;
+            <div id="btn-${f.id}" class="folder-btn group" data-id="${f.id}">
+                <div class="flex items-center gap-3 truncate">
+                    <i class="fa-regular fa-folder text-violet-400 opacity-60 group-hover:opacity-100 transition"></i>
+                    <span class="truncate transition-colors">${f.name}</span>
+                </div>
+                <i class="fa-solid fa-chevron-down text-[10px] chevron transition-transform duration-200 opacity-40"></i>
+            </div>
+            <div id="folder-${f.id}" class="folder-content pl-2"></div>`;
           container.appendChild(div);
 
           const innerContainer = div.querySelector(`#folder-${f.id}`);
           innerContainer.classList.add("indent-level-1");
 
-          // Recursively call Backend API
+          // Must fetch sequentially to keep continuous video numbering exact
           const res = await fetch(`${BACKEND_URL}/api/list/${f.id}`);
           const data = await res.json();
-
           if (data.files) {
-            const subFolders = data.files.filter((x) =>
-              x.mimeType.includes("folder"),
-            );
-            const subVideos = data.files.filter((x) =>
-              x.mimeType.includes("video"),
-            );
+            const naturalSort = (a, b) =>
+              a.name.localeCompare(b.name, undefined, { numeric: true });
+            const subFolders = data.files
+              .filter((x) => x.mimeType.includes("folder"))
+              .sort(naturalSort);
+            const subVideos = data.files
+              .filter((x) => x.mimeType.includes("video"))
+              .sort(naturalSort);
             await processNodes(subFolders, subVideos, innerContainer, f.id);
           }
         }
+
         for (const v of videos) {
-          flatPlaylist.push({ ...v, parentId: parentId });
+          // Strip original prefix numbers (e.g. "1. ", "02 - ") and extension
+          const cleanName = v.name
+            .replace(/^[\d\s\.\-_]+/, "")
+            .replace(/\.mp4/i, "");
+          const formattedName = `${globalVideoCounter}. ${cleanName}`;
+
+          flatPlaylist.push({
+            ...v,
+            parentId: parentId,
+            formattedName: formattedName,
+          });
+
           const div = document.createElement("div");
           div.id = `vid-${v.id}`;
           div.className = "file-btn group";
           div.dataset.id = v.id;
-          div.dataset.search = v.name.toLowerCase();
-          div.innerHTML = `<i class="fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0"></i><span class="truncate">${v.name.replace(/\.mp4/i, "")}</span>`;
+          div.dataset.search = formattedName.toLowerCase();
+          div.innerHTML = `<i class="fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0 z-10"></i>
+                           <span class="truncate z-10 relative">${formattedName}</span>`;
           container.appendChild(div);
+
+          globalVideoCounter++;
         }
       }
+
+      // --- LEARNING PROGRESS & DASHBOARD ---
+      function saveProgress(courseId, videoId, percentage, isCompleted) {
+        if (!progressData[courseId]) progressData[courseId] = { videos: {} };
+        if (!progressData[courseId].videos[videoId])
+          progressData[courseId].videos[videoId] = { p: 0, c: false };
+
+        // Keep highest watched percentage
+        progressData[courseId].videos[videoId].p = Math.max(
+          progressData[courseId].videos[videoId].p,
+          percentage,
+        );
+        if (isCompleted) progressData[courseId].videos[videoId].c = true;
+
+        localStorage.setItem("drive_progress", JSON.stringify(progressData));
+        updateProgressUI();
+      }
+
+      function updateProgressUI() {
+        if (!currentCourse) return;
+        const courseProgress = progressData[currentCourse.id]?.videos || {};
+
+        document.querySelectorAll(".file-btn").forEach((btn) => {
+          const vidId = btn.dataset.id;
+          const prog = courseProgress[vidId];
+          let indicator = btn.querySelector(".progress-bar-fill");
+
+          if (!indicator) {
+            const barContainer = document.createElement("div");
+            barContainer.className =
+              "absolute bottom-0 left-0 w-full h-[2px] bg-white/5 z-0";
+            barContainer.innerHTML = `<div class="progress-bar-fill h-full bg-green-500 transition-all duration-500 opacity-80" style="width: 0%"></div>`;
+            btn.appendChild(barContainer);
+            indicator = barContainer.querySelector(".progress-bar-fill");
+          }
+
+          if (prog) {
+            indicator.style.width = `${prog.p}%`;
+            if (prog.c) {
+              const icon =
+                btn.querySelector(".fa-circle-play") ||
+                btn.querySelector(".icon-box");
+              if (icon && !btn.classList.contains("active")) {
+                icon.className =
+                  "fa-solid fa-circle-check text-green-400 opacity-100 transition icon-box shrink-0 z-10";
+              }
+            }
+          }
+        });
+      }
+
+      function openDashboard() {
+        const modal = document.getElementById("dashboard-modal");
+        const content = document.getElementById("dashboard-content");
+        content.innerHTML = "";
+
+        if (savedCourses.length === 0) {
+          content.innerHTML = `<p class="text-gray-500 text-center py-10">No courses added yet.</p>`;
+        } else {
+          savedCourses.forEach((c) => {
+            const cProg = progressData[c.id]?.videos || {};
+            const completedVideos = Object.values(cProg).filter(
+              (v) => v.c,
+            ).length;
+
+            // To get total videos we peek into the cache if available
+            let totalVideos = 0;
+            const cacheRaw = localStorage.getItem(CACHE_PREFIX + c.id);
+            if (cacheRaw) {
+              totalVideos = JSON.parse(cacheRaw).flatPlaylist.length;
+            }
+
+            const pct =
+              totalVideos > 0
+                ? Math.round((completedVideos / totalVideos) * 100)
+                : 0;
+            const progressColor =
+              pct === 100 ? "bg-green-500" : "bg-violet-500";
+
+            content.innerHTML += `
+              <div class="bg-white/5 border border-white/10 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex-1">
+                  <h3 class="text-white font-medium text-lg mb-1">${c.name}</h3>
+                  <p class="text-gray-400 text-sm"><i class="fa-solid fa-list-ul mr-1"></i> ${completedVideos} / ${totalVideos || "?"} Modules Completed</p>
+                </div>
+                <div class="w-full md:w-1/3 flex flex-col items-end">
+                  <span class="text-white font-bold text-sm mb-1">${pct}%</span>
+                  <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                    <div class="h-full ${progressColor} transition-all duration-1000" style="width: ${pct}%"></div>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        }
+        modal.style.display = "flex";
+      }
+
+      function closeDashboard() {
+        document.getElementById("dashboard-modal").style.display = "none";
+      }
+
+      // Event listeners for tracking progress
+      player.on("timeupdate", () => {
+        if (!currentCourse || currentIndex === -1) return;
+        const video = flatPlaylist[currentIndex];
+        if (!video) return;
+
+        const pct = (player.currentTime() / player.duration()) * 100;
+        // Save progress every ~1% to avoid spamming localStorage
+        if (pct - lastSavedPct > 1 || pct === 100) {
+          saveProgress(currentCourse.id, video.id, pct, false);
+          lastSavedPct = pct;
+        }
+      });
+
+      player.on("ended", () => {
+        if (!currentCourse || currentIndex === -1) return;
+        saveProgress(
+          currentCourse.id,
+          flatPlaylist[currentIndex].id,
+          100,
+          true,
+        );
+        showToast("Lesson completed! Playing next...");
+        playNext();
+      });
 
       // --- PLAYBACK ---
       function playVideoById(videoId) {
         const videoIndex = flatPlaylist.findIndex((v) => v.id === videoId);
         if (videoIndex === -1) return;
         const video = flatPlaylist[videoIndex];
+
         currentIndex = videoIndex;
+        lastSavedPct = 0; // Reset progress tracker for new video
 
         // Uses Backend Stream Endpoint
         player.src({
@@ -796,17 +979,19 @@
           src: `${BACKEND_URL}/stream/${video.id}`,
         });
         player.play().catch(() => {});
-        document.getElementById("video-title").innerText = video.name.replace(
-          /\.mp4/i,
-          "",
-        );
+        document.getElementById("video-title").innerText = video.formattedName;
 
         // UI Active State
         document.querySelectorAll(".file-btn").forEach((b) => {
           b.classList.remove("active");
-          b.querySelector(".icon-box").className =
-            "fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0";
-          b.querySelector(".icon-box").innerHTML = "";
+          const iconBox = b.querySelector(".icon-box");
+          // Restore correct icon state based on progress
+          const isComp =
+            progressData[currentCourse.id]?.videos[b.dataset.id]?.c;
+          iconBox.className = isComp
+            ? "fa-solid fa-circle-check text-green-400 opacity-100 transition icon-box shrink-0 z-10"
+            : "fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0 z-10";
+          iconBox.innerHTML = "";
         });
 
         const activeBtn = document.querySelector(
@@ -815,12 +1000,10 @@
         if (activeBtn) {
           activeBtn.classList.add("active");
           const iconBox = activeBtn.querySelector(".icon-box");
-          iconBox.className = "icon-box shrink-0";
+          iconBox.className = "icon-box shrink-0 z-10";
           iconBox.innerHTML = `<div class="wave-anim"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
 
-          // Expand Folders logic
           if (video.parentId) {
-            // ... (Keep existing expansion logic if deeply nested)
             let p = document.getElementById(`folder-${video.parentId}`);
             if (p) {
               p.classList.add("open");
@@ -829,11 +1012,10 @@
                 .querySelector(".chevron").style.transform = "rotate(180deg)";
             }
           }
+          activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
 
-        // Update URL State without reload
         updateURL(currentCourse.id, videoId);
-
         localStorage.setItem(
           LAST_STATE_KEY,
           JSON.stringify({ courseId: currentCourse.id, videoId: video.id }),
@@ -877,11 +1059,6 @@
           playVideoById(flatPlaylist[currentIndex - 1].id);
       };
 
-      player.on("ended", () => {
-        showToast("Playing next...");
-        playNext();
-      });
-
       // --- LIBRARY & UTILS ---
       function initLibrary() {
         const list = document.getElementById("course-list");
@@ -889,21 +1066,43 @@
         if (savedCourses.length === 0)
           list.innerHTML = `<div class="col-span-full text-center text-gray-500 py-20 font-light">Add a Google Drive link to begin.</div>`;
         savedCourses.forEach((c, i) => {
-          const div = document.createElement("div");
-          div.className =
-            "course-card glass-card p-6 h-[180px] flex flex-col justify-between rounded-2xl cursor-pointer group hover:bg-white/5";
-          div.onclick = (e) => {
-            if (!e.target.closest("button")) loadCourseByIndex(i);
-          };
-          div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-violet-600 transition-colors">${c.name[0].toUpperCase()}</div>
-                    <button onclick="deleteCourse(${i})" class="text-gray-500 hover:text-red-400 p-2 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash-can"></i></button>
-                </div>
-                <div><h3 class="text-lg font-medium text-white leading-tight line-clamp-2">${c.name}</h3><p class="text-xs text-gray-500 font-mono mt-2 opacity-60">ID: ${c.id.slice(0, 6)}</p></div>
-              `;
-          list.appendChild(div);
+          list.appendChild(createCourseCard(c, i));
         });
+      }
+
+      function createCourseCard(c, i) {
+        const div = document.createElement("div");
+        div.className =
+          "course-card glass-card p-6 h-[180px] flex flex-col justify-between rounded-2xl cursor-pointer group hover:bg-white/5 relative overflow-hidden";
+
+        // Progress Overlay
+        const cProg = progressData[c.id]?.videos || {};
+        const compVideos = Object.values(cProg).filter((v) => v.c).length;
+
+        let totalVids = 0;
+        const cacheRaw = localStorage.getItem(CACHE_PREFIX + c.id);
+        if (cacheRaw) {
+          totalVids = JSON.parse(cacheRaw).flatPlaylist.length;
+        }
+
+        const pct =
+          totalVids > 0 ? Math.round((compVideos / totalVids) * 100) : 0;
+
+        div.onclick = (e) => {
+          if (!e.target.closest("button")) loadCourseByIndex(i);
+        };
+        div.innerHTML = `
+            <div class="absolute bottom-0 left-0 h-1 bg-violet-600 transition-all duration-500" style="width: ${pct}%"></div>
+            <div class="flex justify-between items-start">
+                <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-violet-600 transition-colors">${c.name[0].toUpperCase()}</div>
+                <button onclick="deleteCourse(${i})" class="text-gray-500 hover:text-red-400 p-2 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+            <div>
+              <h3 class="text-lg font-medium text-white leading-tight line-clamp-2">${c.name}</h3>
+              <p class="text-xs text-gray-500 font-mono mt-2 opacity-60">Progress: ${pct}%</p>
+            </div>
+        `;
+        return div;
       }
 
       function addCourse() {
@@ -914,13 +1113,19 @@
           savedCourses.push({ name: name, id: match[1] });
           localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
           initLibrary();
+          document.getElementById("new-course-name").value = "";
+          document.getElementById("new-course-link").value = "";
         } else {
           alert("Invalid Link");
         }
       }
+
       function deleteCourse(i) {
         if (confirm("Delete?")) {
           localStorage.removeItem(CACHE_PREFIX + savedCourses[i].id);
+          delete progressData[savedCourses[i].id]; // clean progress
+          localStorage.setItem("drive_progress", JSON.stringify(progressData));
+
           savedCourses.splice(i, 1);
           localStorage.setItem("drive_courses", JSON.stringify(savedCourses));
           initLibrary();
@@ -929,7 +1134,6 @@
 
       // UI HELPERS
       function showLibrary() {
-        // clear url params to keep clean
         window.history.pushState({}, "", window.location.pathname);
         document.getElementById("library-screen").style.display = "flex";
         initLibrary();
@@ -977,11 +1181,7 @@
       function showToast(msg) {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
-
-        // Animation control ke liye hum 'toast' class hi use karenge
         toast.className = "toast";
-
-        // Tera naya HTML structure
         toast.innerHTML = `
         <div class="toast-card">
             <div class="status-icon">
@@ -995,15 +1195,9 @@
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
                 </svg>
             </button>
-        </div>
-    `;
-
+        </div>`;
         container.appendChild(toast);
-
-        // Show animation
         requestAnimationFrame(() => toast.classList.add("show"));
-
-        // Auto-remove after 3 seconds
         setTimeout(() => {
           toast.classList.remove("show");
           setTimeout(() => toast.remove(), 500);
