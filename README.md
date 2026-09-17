@@ -27,9 +27,9 @@
 </br>
 <div align="center">
 	
-  A cross-platform app to download your purchased courses (paid or free) from Udemy, the code is provided as-is and I am not held resposible for any legal issues resulting from the use of this program.<br>  
+  Paste any Google Drive folder link, auto-organize modules, and stream high-definition course videos in real time with custom shortcuts, zero buffering, and study-time tracking.<br>  
+  ## Preview
+  ![demo](assets/demo1.png)
   Project originally by [@Thnoxs](https://github.com/Thnoxs/python-dawnloader) is archived.<br>
-  
-  ![](demoVideo.gif)
-  
-  </div>
+
+</div>
