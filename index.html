@@ -2,21 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="shortcut icon" href="assets/logo.png" type="image/x-icon" />
     <title>Drive Player</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <style>
       :root {
@@ -146,11 +137,7 @@
         color: #fff;
       }
       .file-btn.active {
-        background: linear-gradient(
-          90deg,
-          rgba(139, 92, 246, 0.15),
-          transparent
-        );
+        background: linear-gradient(90deg, rgba(139, 92, 246, 0.15), transparent);
         border-left-color: var(--accent);
         color: #fff;
         font-weight: 500;
@@ -321,10 +308,7 @@
   </head>
   <body>
     <!-- Top Action Buttons -->
-    <div
-      id="floating-settings"
-      class="flex w-full justify-end absolute top-5 right-6 z-[100] items-start gap-2"
-    >
+    <div id="floating-settings" class="flex w-full justify-end absolute top-5 right-6 z-[100] items-start gap-2">
       <button
         onclick="openDashboard()"
         class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white transition hover:bg-white/10"
@@ -360,8 +344,7 @@
       >
         <div class="flex justify-between items-center mb-6 shrink-0">
           <h2 class="text-xl md:text-2xl font-light text-white">
-            <i class="fa-solid fa-chart-pie text-violet-500 mr-3"></i> Learning
-            Dashboard
+            <i class="fa-solid fa-chart-pie text-violet-500 mr-3"></i> Learning Dashboard
           </h2>
           <button
             onclick="closeDashboard()"
@@ -370,20 +353,14 @@
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-        <div
-          id="dashboard-content"
-          class="flex-1 overflow-y-auto custom-scroll space-y-4 pr-2"
-        >
+        <div id="dashboard-content" class="flex-1 overflow-y-auto custom-scroll space-y-4 pr-2">
           <!-- Progress cards injected here -->
         </div>
       </div>
     </div>
 
     <!-- Library Screen -->
-    <div
-      id="library-screen"
-      class="fixed inset-0 z-[1000] flex flex-col items-center justify-center p-6 none"
-    >
+    <div id="library-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center p-6 none">
       <button
         onclick="closeLibrary()"
         id="lib-close-btn"
@@ -392,16 +369,10 @@
         <i class="fa-solid fa-arrow-left"></i>
       </button>
       <div class="w-full max-w-5xl h-full flex flex-col">
-        <div
-          class="flex flex-col md:flex-row justify-between items-end mb-10 mt-12 shrink-0 gap-6"
-        >
+        <div class="flex flex-col md:flex-row justify-between items-end mb-10 mt-12 shrink-0 gap-6">
           <div class="text-center">
-            <h1 class="text-4xl font-light text-white tracking-tight mb-2">
-              Drive Player
-            </h1>
-            <p class="text-gray-400 text-sm font-light">
-              Stream directly from Google Drive
-            </p>
+            <h1 class="text-4xl font-light text-white tracking-tight mb-2">Drive Player</h1>
+            <p class="text-gray-400 text-sm font-light">Stream directly from Google Drive</p>
           </div>
           <div class="flex glass-card p-1 rounded-xl w-full md:w-auto">
             <input
@@ -436,38 +407,21 @@
       id="settings-modal"
       class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/60 backdrop-blur-sm"
     >
-      <div
-        class="glass-card p-6 rounded-2xl w-[90%] max-w-sm"
-        style="background: #111"
-      >
+      <div class="glass-card p-6 rounded-2xl w-[90%] max-w-sm" style="background: #111">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-white font-medium">Preferences</h3>
-          <button
-            onclick="closeSettings()"
-            class="text-gray-400 hover:text-white"
-          >
+          <button onclick="closeSettings()" class="text-gray-400 hover:text-white">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
         <div class="space-y-6">
           <div>
-            <label
-              class="text-gray-500 text-xs font-bold uppercase mb-2 block tracking-wider"
-              >Sidebar Position</label
-            >
+            <label class="text-gray-500 text-xs font-bold uppercase mb-2 block tracking-wider">Sidebar Position</label>
             <div class="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-xl">
-              <button
-                onclick="setSidebar('left')"
-                id="btn-left"
-                class="py-2 text-xs rounded-lg transition-all"
-              >
+              <button onclick="setSidebar('left')" id="btn-left" class="py-2 text-xs rounded-lg transition-all">
                 Left
               </button>
-              <button
-                onclick="setSidebar('right')"
-                id="btn-right"
-                class="py-2 text-xs rounded-lg transition-all"
-              >
+              <button onclick="setSidebar('right')" id="btn-right" class="py-2 text-xs rounded-lg transition-all">
                 Right
               </button>
             </div>
@@ -491,25 +445,16 @@
     <div class="app-shell" id="app-shell">
       <aside class="sidebar glass-panel" id="sidebar">
         <div class="p-4 border-b border-white/5">
-          <div
-            class="flex items-center gap-3 mb-4 opacity-90 cursor-pointer hover:opacity-100"
-            onclick="showLibrary()"
-          >
+          <div class="flex items-center gap-3 mb-4 opacity-90 cursor-pointer hover:opacity-100" onclick="showLibrary()">
             <div class="w-8 h-8 flex items-center justify-center">
               <img src="assets/logo.png" alt="" />
             </div>
             <div class="overflow-hidden">
-              <span
-                id="header-course-name"
-                class="text-sm font-medium truncate text-white block"
-                >Select...</span
-              >
+              <span id="header-course-name" class="text-sm font-medium truncate text-white block">Select...</span>
             </div>
           </div>
           <div class="relative group">
-            <i
-              class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-500 text-xs"
-            ></i>
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-500 text-xs"></i>
             <input
               type="text"
               id="search"
@@ -518,21 +463,14 @@
             />
           </div>
         </div>
-        <div
-          id="playlist"
-          class="flex-1 overflow-y-auto custom-scroll pb-10"
-        ></div>
+        <div id="playlist" class="flex-1 overflow-y-auto custom-scroll pb-10"></div>
       </aside>
 
       <div class="resizer" id="resizer"></div>
 
       <main class="main-content">
-        <div
-          class="flex-1 relative bg-black w-full h-full flex items-center justify-center overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-gradient-to-b from-violet-900/5 to-black pointer-events-none"
-          ></div>
+        <div class="flex-1 relative bg-black w-full h-full flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-violet-900/5 to-black pointer-events-none"></div>
           <video
             id="my-video"
             class="video-js vjs-fill vjs-big-play-centered relative z-10"
@@ -547,15 +485,7 @@
           class="h-[60px] bg-[#050505] border-t border-white/5 flex items-center justify-between px-6 shrink-0 none md:flex"
         >
           <div class="flex flex-col w-2/3">
-            <span
-              class="text-[10px] text-violet-500 font-bold tracking-widest uppercase mb-0.5"
-              >NOW PLAYING</span
-            >
-            <span
-              id="video-title"
-              class="truncate text-sm text-gray-300 font-medium"
-              >No video selected</span
-            >
+            <span id="video-title" class="truncate text-sm text-gray-300 font-medium">No video selected</span>
           </div>
           <div class="flex gap-2">
             <button
@@ -591,18 +521,10 @@
       const LAST_STATE_KEY = "drive_last_state";
 
       // STATE
-      let savedCourses = JSON.parse(
-        localStorage.getItem("drive_courses") || "[]",
-      );
-      let userSettings = JSON.parse(
-        localStorage.getItem("drive_settings") || '{"sidebar": "left"}',
-      );
-      let metaCache = JSON.parse(
-        localStorage.getItem("drive_meta_cache") || "{}",
-      );
-      let progressData = JSON.parse(
-        localStorage.getItem("drive_progress") || "{}",
-      );
+      let savedCourses = JSON.parse(localStorage.getItem("drive_courses") || "[]");
+      let userSettings = JSON.parse(localStorage.getItem("drive_settings") || '{"sidebar": "left"}');
+      let metaCache = JSON.parse(localStorage.getItem("drive_meta_cache") || "{}");
+      let progressData = JSON.parse(localStorage.getItem("drive_progress") || "{}");
 
       let currentCourse = null;
       let flatPlaylist = [];
@@ -637,9 +559,7 @@
           initLibrary();
           const lastState = JSON.parse(localStorage.getItem(LAST_STATE_KEY));
           if (lastState && lastState.courseId) {
-            const course = savedCourses.find(
-              (c) => c.id === lastState.courseId,
-            );
+            const course = savedCourses.find((c) => c.id === lastState.courseId);
             if (course) {
               loadCourse(course, lastState.videoId);
             } else showLibrary();
@@ -655,8 +575,7 @@
       async function loadCourse(courseObj, autoPlayVideoId = null) {
         currentCourse = courseObj;
         document.getElementById("library-screen").style.display = "none";
-        document.getElementById("header-course-name").innerText =
-          currentCourse.name;
+        document.getElementById("header-course-name").innerText = currentCourse.name;
         document.getElementById("lib-close-btn").style.display = "flex";
 
         const container = document.getElementById("playlist");
@@ -697,8 +616,7 @@
           }
 
           currentCourse = ghostCourse;
-          document.getElementById("header-course-name").innerText =
-            ghostCourse.name;
+          document.getElementById("header-course-name").innerText = ghostCourse.name;
           document.getElementById("lib-close-btn").style.display = "flex";
 
           const cached = localStorage.getItem(CACHE_PREFIX + courseId);
@@ -720,14 +638,8 @@
       }
 
       function finalizeLoad(autoPlayVideoId) {
-        document
-          .querySelectorAll(".folder-btn")
-          .forEach((btn) => (btn.onclick = () => toggleFolder(btn.dataset.id)));
-        document
-          .querySelectorAll(".file-btn")
-          .forEach(
-            (btn) => (btn.onclick = () => playVideoById(btn.dataset.id)),
-          );
+        document.querySelectorAll(".folder-btn").forEach((btn) => (btn.onclick = () => toggleFolder(btn.dataset.id)));
+        document.querySelectorAll(".file-btn").forEach((btn) => (btn.onclick = () => playVideoById(btn.dataset.id)));
 
         // Inject progress UI dynamically into cached HTML
         updateProgressUI();
@@ -755,12 +667,8 @@
               sensitivity: "base",
             });
 
-          const folders = data.files
-            .filter((f) => f.mimeType.includes("folder"))
-            .sort(naturalSort);
-          const videos = data.files
-            .filter((f) => f.mimeType.includes("video"))
-            .sort(naturalSort);
+          const folders = data.files.filter((f) => f.mimeType.includes("folder")).sort(naturalSort);
+          const videos = data.files.filter((f) => f.mimeType.includes("video")).sort(naturalSort);
 
           await processNodes(folders, videos, container, rootId);
 
@@ -799,23 +707,16 @@
           const res = await fetch(`${BACKEND_URL}/api/list/${f.id}`);
           const data = await res.json();
           if (data.files) {
-            const naturalSort = (a, b) =>
-              a.name.localeCompare(b.name, undefined, { numeric: true });
-            const subFolders = data.files
-              .filter((x) => x.mimeType.includes("folder"))
-              .sort(naturalSort);
-            const subVideos = data.files
-              .filter((x) => x.mimeType.includes("video"))
-              .sort(naturalSort);
+            const naturalSort = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true });
+            const subFolders = data.files.filter((x) => x.mimeType.includes("folder")).sort(naturalSort);
+            const subVideos = data.files.filter((x) => x.mimeType.includes("video")).sort(naturalSort);
             await processNodes(subFolders, subVideos, innerContainer, f.id);
           }
         }
 
         for (const v of videos) {
           // Strip original prefix numbers (e.g. "1. ", "02 - ") and extension
-          const cleanName = v.name
-            .replace(/^[\d\s\.\-_]+/, "")
-            .replace(/\.mp4/i, "");
+          const cleanName = v.name.replace(/^[\d\s\.\-_]+/, "").replace(/\.mp4/i, "");
           const formattedName = `${globalVideoCounter}. ${cleanName}`;
 
           flatPlaylist.push({
@@ -840,14 +741,10 @@
       // --- LEARNING PROGRESS & DASHBOARD ---
       function saveProgress(courseId, videoId, percentage, isCompleted) {
         if (!progressData[courseId]) progressData[courseId] = { videos: {} };
-        if (!progressData[courseId].videos[videoId])
-          progressData[courseId].videos[videoId] = { p: 0, c: false };
+        if (!progressData[courseId].videos[videoId]) progressData[courseId].videos[videoId] = { p: 0, c: false };
 
         // Keep highest watched percentage
-        progressData[courseId].videos[videoId].p = Math.max(
-          progressData[courseId].videos[videoId].p,
-          percentage,
-        );
+        progressData[courseId].videos[videoId].p = Math.max(progressData[courseId].videos[videoId].p, percentage);
         if (isCompleted) progressData[courseId].videos[videoId].c = true;
 
         localStorage.setItem("drive_progress", JSON.stringify(progressData));
@@ -865,8 +762,7 @@
 
           if (!indicator) {
             const barContainer = document.createElement("div");
-            barContainer.className =
-              "absolute bottom-0 left-0 w-full h-[2px] bg-white/5 z-0";
+            barContainer.className = "absolute bottom-0 left-0 w-full h-[2px] bg-white/5 z-0";
             barContainer.innerHTML = `<div class="progress-bar-fill h-full bg-green-500 transition-all duration-500 opacity-80" style="width: 0%"></div>`;
             btn.appendChild(barContainer);
             indicator = barContainer.querySelector(".progress-bar-fill");
@@ -875,9 +771,7 @@
           if (prog) {
             indicator.style.width = `${prog.p}%`;
             if (prog.c) {
-              const icon =
-                btn.querySelector(".fa-circle-play") ||
-                btn.querySelector(".icon-box");
+              const icon = btn.querySelector(".fa-circle-play") || btn.querySelector(".icon-box");
               if (icon && !btn.classList.contains("active")) {
                 icon.className =
                   "fa-solid fa-circle-check text-green-400 opacity-100 transition icon-box shrink-0 z-10";
@@ -897,9 +791,7 @@
         } else {
           savedCourses.forEach((c) => {
             const cProg = progressData[c.id]?.videos || {};
-            const completedVideos = Object.values(cProg).filter(
-              (v) => v.c,
-            ).length;
+            const completedVideos = Object.values(cProg).filter((v) => v.c).length;
 
             // To get total videos we peek into the cache if available
             let totalVideos = 0;
@@ -908,12 +800,8 @@
               totalVideos = JSON.parse(cacheRaw).flatPlaylist.length;
             }
 
-            const pct =
-              totalVideos > 0
-                ? Math.round((completedVideos / totalVideos) * 100)
-                : 0;
-            const progressColor =
-              pct === 100 ? "bg-green-500" : "bg-violet-500";
+            const pct = totalVideos > 0 ? Math.round((completedVideos / totalVideos) * 100) : 0;
+            const progressColor = pct === 100 ? "bg-green-500" : "bg-violet-500";
 
             content.innerHTML += `
               <div class="bg-white/5 border border-white/10 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -954,12 +842,7 @@
 
       player.on("ended", () => {
         if (!currentCourse || currentIndex === -1) return;
-        saveProgress(
-          currentCourse.id,
-          flatPlaylist[currentIndex].id,
-          100,
-          true,
-        );
+        saveProgress(currentCourse.id, flatPlaylist[currentIndex].id, 100, true);
         showToast("Lesson completed! Playing next...");
         playNext();
       });
@@ -986,17 +869,14 @@
           b.classList.remove("active");
           const iconBox = b.querySelector(".icon-box");
           // Restore correct icon state based on progress
-          const isComp =
-            progressData[currentCourse.id]?.videos[b.dataset.id]?.c;
+          const isComp = progressData[currentCourse.id]?.videos[b.dataset.id]?.c;
           iconBox.className = isComp
             ? "fa-solid fa-circle-check text-green-400 opacity-100 transition icon-box shrink-0 z-10"
             : "fa-regular fa-circle-play text-xs opacity-40 group-hover:text-white transition icon-box shrink-0 z-10";
           iconBox.innerHTML = "";
         });
 
-        const activeBtn = document.querySelector(
-          `.file-btn[data-id="${videoId}"]`,
-        );
+        const activeBtn = document.querySelector(`.file-btn[data-id="${videoId}"]`);
         if (activeBtn) {
           activeBtn.classList.add("active");
           const iconBox = activeBtn.querySelector(".icon-box");
@@ -1007,19 +887,15 @@
             let p = document.getElementById(`folder-${video.parentId}`);
             if (p) {
               p.classList.add("open");
-              document
-                .getElementById(`btn-${video.parentId}`)
-                .querySelector(".chevron").style.transform = "rotate(180deg)";
+              document.getElementById(`btn-${video.parentId}`).querySelector(".chevron").style.transform =
+                "rotate(180deg)";
             }
           }
           activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
 
         updateURL(currentCourse.id, videoId);
-        localStorage.setItem(
-          LAST_STATE_KEY,
-          JSON.stringify({ courseId: currentCourse.id, videoId: video.id }),
-        );
+        localStorage.setItem(LAST_STATE_KEY, JSON.stringify({ courseId: currentCourse.id, videoId: video.id }));
       }
 
       function updateURL(courseId, videoId) {
@@ -1051,12 +927,10 @@
       }
 
       const playNext = () => {
-        if (currentIndex + 1 < flatPlaylist.length)
-          playVideoById(flatPlaylist[currentIndex + 1].id);
+        if (currentIndex + 1 < flatPlaylist.length) playVideoById(flatPlaylist[currentIndex + 1].id);
       };
       const playPrev = () => {
-        if (currentIndex - 1 >= 0)
-          playVideoById(flatPlaylist[currentIndex - 1].id);
+        if (currentIndex - 1 >= 0) playVideoById(flatPlaylist[currentIndex - 1].id);
       };
 
       // --- LIBRARY & UTILS ---
@@ -1085,8 +959,7 @@
           totalVids = JSON.parse(cacheRaw).flatPlaylist.length;
         }
 
-        const pct =
-          totalVids > 0 ? Math.round((compVideos / totalVids) * 100) : 0;
+        const pct = totalVids > 0 ? Math.round((compVideos / totalVids) * 100) : 0;
 
         div.onclick = (e) => {
           if (!e.target.closest("button")) loadCourseByIndex(i);
@@ -1162,9 +1035,7 @@
       });
       document.addEventListener("mousemove", (e) => {
         if (!isResizing) return;
-        const w = document
-          .getElementById("app-shell")
-          .classList.contains("sidebar-right")
+        const w = document.getElementById("app-shell").classList.contains("sidebar-right")
           ? window.innerWidth - e.clientX
           : e.clientX;
         if (w > 200 && w < 600) sidebar.style.width = w + "px";
@@ -1209,12 +1080,7 @@
         const v = e.target.value.toLowerCase();
         document
           .querySelectorAll(".file-btn")
-          .forEach(
-            (b) =>
-              (b.style.display = b.dataset.search.includes(v)
-                ? "flex"
-                : "none"),
-          );
+          .forEach((b) => (b.style.display = b.dataset.search.includes(v) ? "flex" : "none"));
       });
 
       // Keyboard
@@ -1228,9 +1094,7 @@
         }
         if (k === "f") {
           e.preventDefault();
-          player.isFullscreen()
-            ? player.exitFullscreen()
-            : player.requestFullscreen();
+          player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen();
         }
         if (k === "arrowright") {
           e.preventDefault();
